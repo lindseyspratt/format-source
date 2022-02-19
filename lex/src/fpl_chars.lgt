@@ -1,4 +1,4 @@
-:- object(fpl_token).
+:- object(fpl_chars).
 
 	:- info([
 		version is 1:0:0,

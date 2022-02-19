@@ -39,8 +39,7 @@
 	  [C],
 	  !,
 	  {ModeIn = code
-	       -> ModeOut = comment("
-	")
+	       -> ModeOut = comment("\n")
 	   ; ModeOut = ModeIn}.
 	token(Special, ModeIn, ModeOut) -->
 	  {Special = "*/",

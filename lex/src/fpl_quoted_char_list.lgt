@@ -1,4 +1,4 @@
-:- object(fpl_whitespace).
+:- object(fpl_quoted_char_list).
 
 	:- info([
 		version is 1:0:0,

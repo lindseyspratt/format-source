@@ -1,4 +1,4 @@
-:- object(fpl_token).
+:- object(fpl_display_lex_list).
 
 	:- info([
 		version is 1:0:0,

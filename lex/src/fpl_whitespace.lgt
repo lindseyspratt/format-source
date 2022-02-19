@@ -11,7 +11,7 @@
 	:- mode(whitespace(-list, +atom, -atom), one).
 	:- info(whitespace//3, [
 		comment is 'Parse the beginning of a list of codes into a list of whitespace codes, updating the ModeIn to ModeOut where a mode is `comment` or `code`.',
-		argnames is ['SourceFile', 'Tokens']
+		argnames is ['Codes', 'ModeIn', 'ModeOut']
 	]).
 
 	:- uses(fpl_chars, [ws_char/1, punctuation_char/1]).
@@ -31,8 +31,7 @@
 
 	ws_list([H|T]) -->
 	  wsc(H),
-	  {[H] \= "
-	"},
+	  {[H] \= "\n"},
 	  ws_list(T).
 	ws_list([]) --> [].
 
