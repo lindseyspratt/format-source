@@ -14,12 +14,22 @@
 		comment is 'Display the comment with annotated abstract syntax tree `ParseTree`, indenting by `Indent`.',
 		argnames is ['Indent', 'StartToken', 'ParseTree']
 	]).
+
+	:- public(display_comment_end/3).
+	:- mode(display_comment_end(+integer, +integer, +term), one).
+	:- info(display_comment_end/3, [
+		comment is 'Display the comment `End` at line count `StartLine`, indenting by `Indent`.',
+		argnames is ['StartLine', 'Indent', 'EndToken']
+	]).
 	
 	:- uses(fpu_output_position, [pos/1, current_line/1, adjusted_pos/2, adjusted_pos/3, fp_tab/1, fp_nl/0]).
 	:- uses(fpu_display_item, [display_item/2]).
 	:- uses(fpu_operator_class, [operator_class/3]).
 	
+	/*------------------------------------------------------------------*/
+
 	^^(A, B) :- ::eval(A, B).
+	
 	
 	/*------------------------------------------------------------------*/
 
@@ -30,6 +40,8 @@
 	         display_item(1, t([0'/, 0'*])), % The explicit escapes avoid syntax-coloring bug in handling "/ *"
 	         B ^^ display(L1, NextCol).
 
+
+	/*------------------------------------------------------------------*/
 
 	display_comment_end(StartLine, Col, End) :-
 	          current_line(L2),
@@ -47,7 +59,6 @@
 	           display_item(NextCol, End),
 	           fp_tab(1)
 	          ).
-
 
 
 	/*------------------------------------------------------------------*/
@@ -111,7 +122,6 @@
  			   logtalk::print_message(error, format_prolog, 'display_infix_term: unrecognized class ~w.'+[Class]),
 			   throw(error(system_error, display_infix_term/6))
 	          ).
-
 
 
 	/*------------------------------------------------------------------*/

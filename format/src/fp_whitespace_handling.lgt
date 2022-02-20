@@ -7,6 +7,20 @@
 		argnames is ['Tree', 'Tokens', 'Remainder']
 	]).
 
+	:- public(nnl_wlsDCTG/3).
+	:- mode(nnl_wlsDCTG(-term, +list, -list), one).
+	:- info(nnl_wlsDCTG/3, [
+		comment is 'Parse `Tokens` as `no newline` whitespace to create the annotated abstract syntax tree `Tree`.',
+		argnames is ['Tree', 'Tokens', 'Remainder']
+	]).
+
+	:- public(blank_linesDCTG/3).
+	:- mode(blank_linesDCTG(-term, +list, -list), one).
+	:- info(blank_linesDCTG/3, [
+		comment is 'Parse `Tokens` as a sequence of lines of whitespace to create the annotated abstract syntax tree `Tree`.',
+		argnames is ['Tree', 'Tokens', 'Remainder']
+	]).
+
 	:- uses(list, [member/2,memberchk/2]).
 	
 	/*------------------------------------------------------------------*/

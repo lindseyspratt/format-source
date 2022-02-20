@@ -13,6 +13,21 @@
 		comment is 'Trim elements of `TrimList` from the beginning of `Input` list until an element not in `TrimList` is encountered to create `Output` list.',
 		argnames is ['Input', 'TrimList', 'Output']
 	]).
+
+	:- public(repeated_codes/1).
+	:- mode(repeated_codes(+list), one).
+	:- info(repeated_codes/1, [
+		comment is 'Check that `Codes` is all the same character.',
+		argnames is ['Codes']
+	]).
+
+	:- public(repeated_codes/2).
+	:- mode(repeated_codes(+list, +integer), one).
+	:- info(repeated_codes/2, [
+		comment is 'Check that `Codes` is all the same character `Code`.',
+		argnames is ['Codes', 'Code']
+	]).
+	
 	
 	:- uses(list, [memberchk/2]).
 
@@ -43,6 +58,7 @@
 
 	repeated_codes( [C | Cs]) :-
 	          repeated_codes(Cs, C).
+			  
 	repeated_codes( [], _).
 	repeated_codes( [C | Cs], C) :-
 	          repeated_codes(Cs, C).

@@ -8,6 +8,48 @@
 		comment is 'Utilities for nodes in the annotated abstract syntax tree for format prolog system.'
 	]).
 
+	:- public(eval_clause/1).
+	:- mode(eval_clause(+term), one).
+	:- info(eval_clause/1, [
+		comment is 'Evaluates annotated abstract syntax tree `Clause`.',
+		argnames is ['Clause']
+	]).
+
+	:- public(eval_conj/1).
+	:- mode(eval_conj(+term), one).
+	:- info(eval_conj/1, [
+		comment is 'Evaluates annotated abstract syntax tree `Conjunction`.',
+		argnames is ['Conjunction']
+	]).
+
+	:- public(eval_goal/1).
+	:- mode(eval_goal(+term), one).
+	:- info(eval_goal/1, [
+		comment is 'Evaluates annotated abstract syntax tree `Goal`.',
+		argnames is ['Goal']
+	]).
+
+	:- public(eval_op/1).
+	:- mode(eval_op(+term), one).
+	:- info(eval_op/1, [
+		comment is 'Evaluates annotated abstract syntax tree `Op`, recording the operator definition.',
+		argnames is ['Op']
+	]).
+
+	:- public(eval_opclass/1).
+	:- mode(eval_op(+term), one).
+	:- info(eval_op/1, [
+		comment is 'Evaluates annotated abstract syntax tree `OpClass`, recording the operator class.',
+		argnames is ['OpClass']
+	]).
+
+	:- public(read_op/3).
+	:- mode(read_op(+atom, +atom, +atom), one).
+	:- info(read_op/3, [
+		comment is 'Unifies with the recorded fact `Prec`, `Assoc`, and `Op` for the operator.',
+		argnames is ['Op', 'Context', 'Class']
+	]).
+
 	:- public(read_operator_class/3).
 	:- mode(read_operator_class(+atom, +atom, +atom), one).
 	:- info(read_operator_class/3, [
