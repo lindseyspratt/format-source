@@ -31,6 +31,8 @@
 	]),
 	logtalk_load([
 		'src/fpu_output_position',
+		'src/fpu_string',
+		'src/fpu_display_item',
 		'src/fpu_node_evaluation',
 		'src/fpu_operator_class',
 		'src/fpu_display',

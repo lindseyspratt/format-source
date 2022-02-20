@@ -16,7 +16,7 @@
 	]).
 	
 	:- uses(fpu_output_position, [pos/1, current_line/1, adjusted_pos/2, adjusted_pos/3, fp_tab/1, fp_nl/0]).
-	:- uses(fpu_display_item, [display_item/3]).
+	:- uses(fpu_display_item, [display_item/2]).
 	:- uses(fpu_operator_class, [operator_class/3]).
 	
 	^^(A, B) :- ::eval(A, B).
