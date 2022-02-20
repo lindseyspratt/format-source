@@ -1,5 +1,8 @@
 :- object(fp_clause_group).
 
+	:- uses(fpu_output_position, [fp_nl/0, fp_writenl/1]).
+	:- uses(fp_comments, [commentsDCTG/3]).
+
 	dctg_main(clause_group/1, display/0).
 
 %/*------------------------------------------------------------------*/

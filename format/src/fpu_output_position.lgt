@@ -4,7 +4,7 @@
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
 		date is 2022-2-22,
-		comment is 'Utilities for output for format prolog syste.'
+		comment is 'Utilities for output for format prolog system.'
 	]).
 
 	:- public(fp_nl/0).
@@ -18,6 +18,27 @@
 	:- info(fp_nl/1, [
 		comment is 'Write a newline on `Stream` and update the current output position.',
 		argnames is ['Stream']
+	]).
+
+	:- public(pos/1).
+	:- mode(pos(-integer), one).
+	:- info(pos/1, [
+		comment is 'Pads (by writing zero or more spaces) the current output position to `Pos`, writing a newline before padding if `Pos` is less than the current output position.',
+		argnames is ['Pos']
+	]).
+
+	:- public(adjusted_pos/3).
+	:- mode(adjusted_pos(+integer, +integer, -integer), one).
+	:- info(adjusted_pos/3, [
+		comment is 'Calculates `ColumnOut` based on the current output position plus `Add` (`AdjustedCurrent`) compared to `ColumnIn`: if `AdjustedCurrent` is between `ColumnIn` and 70 then `ColumnOut` is `AdjustedCurrent`, otherwise it is bound to `ColumnIn`.',
+		argnames is ['ColumnIn', 'Add', 'ColumnOut']
+	]).
+
+	:- public(current_line/1).
+	:- mode(current_line(-integer), one).
+	:- info(current_line/1, [
+		comment is 'Binds `Line` to the current output line count.',
+		argnames is ['Line']
 	]).
 
 	:- public(writeseqnl/1).
