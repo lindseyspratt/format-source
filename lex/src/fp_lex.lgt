@@ -14,6 +14,13 @@
 		argnames is ['SourceFile', 'Tokens']
 	]).
 
+	:- public(lex//1).
+	:- mode(lex(-list), one).
+	:- info(lex//1, [
+		comment is 'Parse a list of character codes into a list of tokens.',
+		argnames is ['Tokens']
+	]).
+
 	:- uses(fpl_whitespace, [whitespace//3, punctuation//2]).
 	:- uses(fpl_token, [token//3]).
 	

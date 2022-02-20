@@ -1,0 +1,266 @@
+:- object(fpu_output_position).
+
+	:- info([
+		version is 1:0:0,
+		author is 'Lindsey Spratt',
+		date is 2022-2-22,
+		comment is 'Utilities for output for format prolog syste.'
+	]).
+
+	:- public(fp_nl/0).
+	:- mode(fp_nl, one).
+	:- info(fp_nl/0, [
+		comment is 'Write a newline on the current output stream and update the current output position.'
+	]).
+
+	:- public(fp_nl/1).
+	:- mode(fp_nl(+stream), one).
+	:- info(fp_nl/1, [
+		comment is 'Write a newline on `Stream` and update the current output position.',
+		argnames is ['Stream']
+	]).
+
+	:- public(writeseqnl/1).
+	:- mode(writeseqnl(+list), one).
+	:- info(writeseqnl/1, [
+		comment is 'Write a list of terms followed by a newline on current output.',
+		argnames is ['List']
+	]).
+	
+	:- dynamic('format_prolog$known_current_position'/2).
+	:- dynamic('format_prolog$known_line_count'/3).
+	
+	/*------------------------------------------------------------------*/
+
+	fp_write(Symbol) :-
+	          current_output(Channel),
+	          fp_write(Channel, Symbol).
+
+	fp_write(Channel, Symbol) :-
+	          write(Channel, Symbol),
+	          atom_codes(Symbol, Codes),
+	          length_after_newline(Codes, Length, NewLine),
+	          (NewLine = no -> true
+	           ; reset_current_position(Channel)),
+	          adjust_current_position(Channel, Length).
+
+	length_after_newline(Codes, Length, NewLine) :-
+	          length_after_newline(Codes, 0, Length, NewLine).
+
+	length_after_newline([], Length, Length, _).
+	length_after_newline([C|OCs], LIn, LOut, NewLine) :-
+	          ([C] = "\n"
+	             -> LNext = 0, NewLine = yes
+	          ; LNext is LIn + 1),
+	          length_after_newline(OCs, LNext, LOut, NewLine).
+
+	/*------------------------------------------------------------------*/
+
+	fp_writenl(Symbol) :-
+	          current_output(Channel),
+	          fp_writenl(Channel, Symbol).
+
+	fp_writenl(Channel, Symbol) :-
+	          write(Channel, Symbol),
+			  nl(Channel),
+	          reset_current_position(Channel).
+
+
+
+	/*------------------------------------------------------------------*/
+
+	fp_tab(Count) :-
+	          current_output(Channel),
+	          fp_tab(Channel, Count).
+
+	fp_tab(Channel, Count) :-
+	          tab(Channel, Count),
+	          adjust_current_position(Channel, Count).
+
+	tab(Channel, N) :-
+		N > 0,
+		write(' '),
+		K is N - 1,
+		tab(Channel, K).
+	tab(_Channel, 0).
+
+
+	/*------------------------------------------------------------------*/
+
+	fp_nl :-  current_output(Channel),
+	          fp_nl(Channel).
+
+	fp_nl(Channel) :-
+	          nl(Channel),
+	          reset_current_position(Channel).
+
+
+
+	/*------------------------------------------------------------------*/
+
+	known_current_position(Channel, Position) :-
+	          'format_prolog$known_current_position'(Channel, Position) -> true
+	          ;
+	          Position = 1.
+
+
+
+	/*------------------------------------------------------------------*/
+
+	adjust_current_position(Channel, Change) :-
+	          retract('format_prolog$known_current_position'(Channel, OldPosition)
+	                 )
+	           -> NewPosition is OldPosition + Change,
+	              assertz('format_prolog$known_current_position'(Channel, NewPosition)
+	                    )
+	          ;
+			  logtalk::print_message(warning, format_prolog, 'adjust_current_position: no recorded position.'),
+	          assertz('format_prolog$known_current_position'(Channel, Change)
+	                ).
+
+
+
+	/*------------------------------------------------------------------*/
+
+	reset_current_position :-
+	          current_output(Channel),
+	          reset_current_position(Channel).
+
+	reset_current_position(Channel) :-
+	          retractall('format_prolog$known_current_position'(Channel, _)),
+	          assertz('format_prolog$known_current_position'(Channel, 1)),
+	          !.
+
+
+
+	/*------------------------------------------------------------------*/
+
+	initialize_output_position_info :-
+	          reset_current_position(_),
+	          % retractall('format_prolog$known_position'(_, _, _, _)),
+	          retractall('format_prolog$known_line_count'(_, _, _)).
+
+
+
+	/*------------------------------------------------------------------*/
+
+	pos(Column) :-
+	          pos(Column, _).
+
+	pos(ColumnIn, Newline) :-
+	          (ColumnIn < 1 -> Column = 1; Column = ColumnIn),
+	          current_column(P),
+	          PositionDifference is Column - P,
+	          (PositionDifference < 0
+	            -> fp_nl,
+	               Newline = yes,
+	               Pad is Column - 1
+	           ;
+	           Pad = PositionDifference,
+	           Newline = no
+	          ),
+	          fp_tab(Pad).
+
+
+
+	/*------------------------------------------------------------------*/
+
+	adjusted_pos(Column0, Column1) :-
+	          adjusted_pos(Column0, 0, Column1).
+
+	adjusted_pos(Column0, Add, Column1) :-
+	          current_column(P),
+	          Ncol is P + Add,
+	          ((Ncol < Column0
+	            ;
+	            Ncol > 70
+	           )-> Column1 = Column0
+	           ;
+	           Column1 = Ncol
+	          ).
+
+
+
+	/*------------------------------------------------------------------*/
+
+	current_column(Col) :-
+	          current_output(Stream),
+	          line_position(Stream, Col).
+
+
+
+	/*------------------------------------------------------------------*/
+
+	current_line(Line) :-
+	          current_output(Stream),
+	          stream_line_count(Stream, Line).
+
+
+
+	/*------------------------------------------------------------------*/
+
+/*	current_output(C) :-
+	          telling(C).
+*/
+
+
+	/*------------------------------------------------------------------*/
+
+	line_position(C, P) :-
+	          known_current_position(C, P).
+
+
+
+	/*------------------------------------------------------------------*/
+
+	stream_line_count(C, Line) :-
+	          stream_property(C, position(OriginalPosition)), % cursor(C, OriginalPosition, OriginalPosition),
+	          ('format_prolog$known_line_count'(C, KnownPosition, KnownCount)
+	            -> true
+	           ;
+	           KnownPosition = 1,
+	           KnownCount = 1
+	          ),
+	          set_stream_position(C, position(KnownPosition)), % cursor(C, KnownPosition, KnownPosition),
+	          stream_line_count(C, OriginalPosition, KnownCount, Line),
+	          replace_line_count(C, OriginalPosition, Line),
+	          set_stream_position(C, position(OriginalPosition)). % cursor(C, OriginalPosition, OriginalPosition).
+
+	stream_line_count(C, OriginalPosition, CountIn, CountOut) :-
+	          skip(C, 0'\n)
+	           -> stream_property(C, position(CurrentPosition)), % cursor(C, CurrentPosition, CurrentPosition),
+	              (CurrentPosition > OriginalPosition
+	                -> CountIn = CountOut
+	               ;
+	               CountNext is CountIn + 1,
+	               stream_line_count(C, OriginalPosition, CountNext, CountOut)
+	              )
+	          ;
+	          CountIn = CountOut.
+
+
+
+	/*------------------------------------------------------------------*/
+
+	replace_line_count(C, Pos, Line) :-
+	          (retract('format_prolog$known_line_count'(C, _, _))
+	           ;
+	           true
+	          ),
+			  !,
+			  assertz('format_prolog$known_line_count'(C, Pos, Line)).
+	
+	skip(Stream, Code) :-
+		get_code(Stream, Check),
+		((Code = Check; Check = -1)
+		  -> true
+		;
+		skip(Stream, Code)
+		).
+
+	writeseqnl([]) :- nl.
+	writeseqnl([H|T]) :-
+		write(H),
+		writeseqnl(T).
+
+:- end_object.

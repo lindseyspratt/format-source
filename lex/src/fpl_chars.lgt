@@ -6,6 +6,27 @@
 		date is 2022-2-22,
 		comment is 'character types for the format prolog source system lexical analysis.'
 	]).
+	
+	:- public(ws_char/1).
+	:- mode(ws_char(?integer), one_or_more).
+	:- info(ws_char/1, [
+		comment is 'Identifies a character code integer as representing a whitespace character (blank, tab, carriage return, or linefeed).',
+		argnames is ['Code']
+	]).
+	
+	:- public(punctuation_char/1).
+	:- mode(punctuation_char(?integer), one_or_more).
+	:- info(punctuation_char/1, [
+		comment is 'Identifies a character code integer as representing a punctuation character (e.g period, comma, `|`).',
+		argnames is ['Code']
+	]).
+	
+	:- public(token_char/2).
+	:- mode(token_char(-integer, -atom), one_or_more).
+	:- info(token_char/2, [
+		comment is 'Identifies a character `Code` integer as representing a token character (e.g `a`, `b`) with a `Type`.',
+		argnames is ['Code', 'Type']
+	]).
 
 	ws_char(32). /* blank */
 	ws_char(9). /* tab */

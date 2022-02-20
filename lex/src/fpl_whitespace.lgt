@@ -14,6 +14,13 @@
 		argnames is ['Codes', 'ModeIn', 'ModeOut']
 	]).
 
+	:- public(punctuation//2).
+	:- mode(punctuation(-integer, -atom), one).
+	:- info(punctuation//2, [
+		comment is 'Parse the first code of a list of codes into a code and a mode where a mode is `comment` or unbound.',
+		argnames is ['Code', 'Mode']
+	]).
+
 	:- uses(fpl_chars, [ws_char/1, punctuation_char/1]).
 	:- uses(list, [member/2]).
 	
