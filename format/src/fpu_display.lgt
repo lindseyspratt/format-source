@@ -22,9 +22,25 @@
 		argnames is ['StartLine', 'Indent', 'EndToken']
 	]).
 	
-	:- uses(fpu_output_position, [pos/1, current_line/1, adjusted_pos/2, adjusted_pos/3, fp_tab/1, fp_nl/0]).
+	
+	:- public(display_element_list/6).
+	:- mode(display_element_list(+atom, +integer, +integer, +term, +term, +term), one).
+	:- info(display_element_list/6, [
+		comment is 'Display padded by `Indent` fit to `Len` the head term `T`, comment `C`, and tail list `L`.',
+		argnames is ['Mode', 'Indent', 'Len', 'T', 'C', 'L']
+	]).
+
+	:- public(tst_display/3).
+	:- mode(tst_display(+integer, +integer, +term), one).
+	:- info(tst_display/3, [
+		comment is 'Display padded by `Indent` a term structure `tail` from annotated abstract syntax tree `Arguments` and comment AAST `Comments`.',
+		argnames is ['Indent', 'Arguments', 'Comments']
+	]).
+
+	:- uses(fpu_output_position, [pos/1, current_line/1, current_column/1, adjusted_pos/2, adjusted_pos/3, fp_write/1, fp_tab/1, fp_nl/0]).
 	:- uses(fpu_display_item, [display_item/2]).
 	:- uses(fpu_operator_class, [operator_class/3]).
+	:- uses(fpu_fit, [fit/5]).
 	
 	/*------------------------------------------------------------------*/
 
@@ -129,6 +145,41 @@
 	class_indent(neck, 10) :- !.
 	class_indent(dependent_clause, 1) :- !.
 	class_indent(_, 0).
+	
+
+	/*------------------------------------------------------------------*/
+
+	display_element_list(Mode, Col, Len, T, C, L) :-
+	          fit(Mode, Col, NextMode, Acol1, Len),
+	          T ^^ display(Acol1),
+	          adjusted_pos(Col, Acol2),
+	          C ^^ display(Acol2),
+	          L ^^ display(NextMode, Col).
+
+	/*------------------------------------------------------------------*/
+
+	tst_display(Col, T, C) :-
+	          tst_display1(Col, Ln1, Ncol1),
+	          T ^^ display(Ncol1),
+	          adjusted_pos(Col, Ncol2),
+	          C ^^ display(Ncol2),
+	          current_line(Ln2),
+	          (Ln1 =:= Ln2
+	            -> true
+	           ;
+	           pos(Col)
+	          ),
+	          fp_write(')').
+
+
+
+	/*------------------------------------------------------------------*/
+
+	tst_display1(Col, Ln1, Ncol1) :-
+	          pos(Col),
+	          current_line(Ln1),
+	          fp_write('('),
+	          current_column(Ncol1).
 
 :- end_object.
 

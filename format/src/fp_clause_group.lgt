@@ -6,6 +6,7 @@
 	:- uses(fp_trailing_comment, [trailing_commentDCTG/3]).
 	:- uses(fp_named_characters, [periodDCTG/3]).
 	:- uses(fp_error_skip, [error_skipDCTG/4]).
+	:- uses(fp_term_expression, [term_expressionDCTG/6]).
 
 	dctg_main(clause_group/1, display/0).
 

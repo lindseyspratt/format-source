@@ -21,16 +21,16 @@
 		argnames is ['Tree', 'Tokens', 'Remainder']
 	]).
 
-	:- public(format_directiveDCTG/3).
+/*	:- public(format_directiveDCTG/3).
 	:- mode(format_directiveDCTG(-term, +list, -list), one).
 	:- info(format_directiveDCTG/3, [
 		comment is 'Parse `Tokens` as a Prolog format directive to create the annotated abstract syntax tree `Tree`.',
 		argnames is ['Tree', 'Tokens', 'Remainder']
 	]).
-
+*/
 	:- uses(fpu_output_position, [adjusted_pos/3, fp_write/1]).
-	:- uses(fpu_node_evaluation, [eval_goal/1]).
-	:- uses(fp_whitespace_handling, [wlsDCTG/3]).
+%	:- uses(fpu_node_evaluation, [eval_goal/1]).
+%	:- uses(fp_whitespace_handling, [wlsDCTG/3]).
 	
 	/*------------------------------------------------------------------*/
 
@@ -56,7 +56,7 @@
 
 	/*------------------------------------------------------------------*/
 
-	format_directive ::=
+/*	format_directive ::=
 	          format_key ^^ K,
 	          wls,
 	          term_expression(clause, 0, '=<') ^^ T,
@@ -67,7 +67,7 @@
 	               adjusted_pos(Col, 1, Ncol),
 	               T ^^ display(Ncol),
 	               fp_write('$').
-
+*/
 
 
 	/*------------------------------------------------------------------*/

@@ -5,7 +5,7 @@
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
 		date is 2022-2-22,
-		comment is 'Utilities for nodes in the annotated abstract syntax tree for format prolog system.'
+		comment is 'Utilities for handling format-specific operator information at format-time in the annotated abstract syntax tree for format prolog system.'
 	]).
 
 	:- public(eval_clause/1).

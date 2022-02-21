@@ -7,6 +7,12 @@
 		comment is 'Utilities for output for format prolog system.'
 	]).
 
+	:- public(initialize_output_position_info/0).
+	:- mode(initialize_output_position_info, one).
+	:- info(initialize_output_position_info/0, [
+		comment is 'Initialize output position.'
+	]).
+
 	:- public(fp_nl/0).
 	:- mode(fp_nl, one).
 	:- info(fp_nl/0, [

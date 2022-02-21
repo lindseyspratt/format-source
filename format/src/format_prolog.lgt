@@ -7,6 +7,13 @@
 		comment is 'Format prolog source.'
 	]).
 
+	:- public(format_prolog/2).
+	:- mode(format_prolog(+file, +file), one).
+	:- info(format_prolog/2, [
+		comment is 'Format `Source`file Prolog program to create `Output` file.',
+		argnames is ['Source', 'Output']
+	]).
+
 	:- uses(fp_lex, [lex_file/2]).
 	:- uses(fpu_output_position, [initialize_output_position_info/0, fp_nl/0, writeseqnl/1]).
 	
