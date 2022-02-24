@@ -1,9 +1,29 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Copyright (c) 2022 Lindsey Spratt
+%  SPDX-License-Identifier: MIT
+%
+%  Licensed under the MIT License (the "License");
+%  you may not use this file except in compliance with the License.
+%  You may obtain a copy of the License at
+%
+%      https://opensource.org/licenses/MIT
+%
+%  Unless required by applicable law or agreed to in writing, software
+%  distributed under the License is distributed on an "AS IS" BASIS,
+%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+%  See the License for the specific language governing permissions and
+%  limitations under the License.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 :- object(fp_trivial_comment).
 
 	:- info([
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
-		date is 2022-2-22,
+		date is 2022-02-22,
 		comment is 'DCTG for a trivial Prolog comment for format prolog system.'
 	]).
 
@@ -23,28 +43,28 @@
    character.
    */  
 trivial_comment ::=
-          comment_start(_, End),
-          wls,
-          trivial_comment_body(End),
-          !.
+	comment_start(_, End),
+	wls,
+	trivial_comment_body(End),
+	!.
 
 trivial_comment ::=
-           [].
+	 [].
 
 
 
 /*------------------------------------------------------------------*/
 
 trivial_comment_body(End) ::=
-          repeated_characters,
-          comment_body_wls(End),
-          comment_end(End),
-          !.
+	repeated_characters,
+	comment_body_wls(End),
+	comment_end(End),
+	!.
 
 trivial_comment_body(End) ::=
-          comment_body_wls(End),
-          comment_end(End),
-          !.
+	comment_body_wls(End),
+	comment_end(End),
+	!.
 
 :- end_object.
 

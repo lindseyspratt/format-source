@@ -1,10 +1,30 @@
-:- object(fpu_node_evaluation, 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Copyright (c) 2022 Lindsey Spratt
+%  SPDX-License-Identifier: MIT
+%
+%  Licensed under the MIT License (the "License");
+%  you may not use this file except in compliance with the License.
+%  You may obtain a copy of the License at
+%
+%      https://opensource.org/licenses/MIT
+%
+%  Unless required by applicable law or agreed to in writing, software
+%  distributed under the License is distributed on an "AS IS" BASIS,
+%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+%  See the License for the specific language governing permissions and
+%  limitations under the License.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+:- object(fpu_node_evaluation,
 	imports([dctg_evaluate])).
 
 	:- info([
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
-		date is 2022-2-22,
+		date is 2022-02-22,
 		comment is 'Utilities for handling format-specific operator information at format-time in the annotated abstract syntax tree for format prolog system.'
 	]).
 
@@ -65,94 +85,92 @@
 	/*------------------------------------------------------------------*/
 
 	eval_clause(T) :-
-	          T ^^ args( [Goal]),
-	          eval_goal(Goal).
+		T ^^ args( [Goal]),
+		eval_goal(Goal).
 
 
 
 	/*------------------------------------------------------------------*/
 
 	eval_conj(Conj) :-
-	          Conj ^^ args(Args),
-	          (Args =  [First, Second]
-	            -> eval_goal(First),
-	               eval_goal(Second)
-	           ;
-	           [Goal] = Args,
-	           eval_goal(Goal)
-	          ).
+		Conj ^^ args(Args),
+		(Args =  [First, Second]
+		  -> eval_goal(First),
+		     eval_goal(Second)
+		 ;
+		 [Goal] = Args,
+		 eval_goal(Goal)
+		).
 
 
 
 	/*------------------------------------------------------------------*/
 
 	eval_goal(Goal) :-
-	          Goal ^^ functor(Functor),
-	          (Functor = ','
-	           /* conjunction */  
-	            -> eval_conj(Goal)
-	           ;
-	           Functor = op
-	            -> eval_op(Goal)
-	           ;
-	           Functor = opclass
-	            -> eval_opclass(Goal)
-	           ;
-	           true
-	          ).
+		Goal ^^ functor(Functor),
+		(Functor = (',')
+		 /* conjunction */  
+		  -> eval_conj(Goal)
+		 ;
+		 Functor = op
+		  -> eval_op(Goal)
+		 ;
+		 Functor = opclass
+		  -> eval_opclass(Goal)
+		 ;
+		 true
+		).
 
 
 
 	/*------------------------------------------------------------------*/
 
 	eval_op(OpGoal) :-
-	          OpGoal ^^ args( [PrecNode, AssocNode, OpNode]),
-	          PrecNode ^^ functor(Prec),
-	          AssocNode ^^ functor(Assoc),
-	          OpNode ^^ functor(Op),
-	          record_read_op(Prec, Assoc, Op).
+		OpGoal ^^ args( [PrecNode, AssocNode, OpNode]),
+		PrecNode ^^ functor(Prec),
+		AssocNode ^^ functor(Assoc),
+		OpNode ^^ functor(Op),
+		record_read_op(Prec, Assoc, Op).
 
 
 
 	/*------------------------------------------------------------------*/
 
 	read_op(Prec, Assoc, Op) :-
-	          'format_prolog$read_op'(Prec, Assoc, Op).
+		'format_prolog$read_op'(Prec, Assoc, Op).
 
 
 
 	/*------------------------------------------------------------------*/
 
 	record_read_op(Prec, Assoc, Op) :-
-	          retractall('format_prolog$read_op'(_, Assoc, Op)),
-	          assertz('format_prolog$read_op'(Prec, Assoc, Op)).
+		retractall('format_prolog$read_op'(_, Assoc, Op)),
+		assertz('format_prolog$read_op'(Prec, Assoc, Op)).
 
 
 
 	/*------------------------------------------------------------------*/
 
 	eval_opclass(OpclassGoal) :-
-	          OpclassGoal ^^ args( [OpNode, ContextNode, ClassNode]),
-	          OpNode ^^ functor(Op),
-	          ClassNode ^^ functor(Class),
-	          ContextNode ^^ functor(Context),
-	          record_read_operator_class(Op, Context, Class).
+		OpclassGoal ^^ args( [OpNode, ContextNode, ClassNode]),
+		OpNode ^^ functor(Op),
+		ClassNode ^^ functor(Class),
+		ContextNode ^^ functor(Context),
+		record_read_operator_class(Op, Context, Class).
 
 
 
 	/*------------------------------------------------------------------*/
 
 	read_operator_class(Op, Context, Class) :-
-	          'format_prolog$read_operator_class'(Op, Context, Class).
+		'format_prolog$read_operator_class'(Op, Context, Class).
 
 
 
 	/*------------------------------------------------------------------*/
 
 	record_read_operator_class(Op, Context, Class) :-
-	          retractall('format_prolog$read_operator_class'(Op, Context, _)),
-	          assertz('format_prolog$read_operator_class'(Op, Context, Class)).
-
+		retractall('format_prolog$read_operator_class'(Op, Context, _)),
+		assertz('format_prolog$read_operator_class'(Op, Context, Class)).
 
 :- end_object.
-

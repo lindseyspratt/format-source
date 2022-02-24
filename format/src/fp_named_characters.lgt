@@ -1,9 +1,29 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Copyright (c) 2022 Lindsey Spratt
+%  SPDX-License-Identifier: MIT
+%
+%  Licensed under the MIT License (the "License");
+%  you may not use this file except in compliance with the License.
+%  You may obtain a copy of the License at
+%
+%      https://opensource.org/licenses/MIT
+%
+%  Unless required by applicable law or agreed to in writing, software
+%  distributed under the License is distributed on an "AS IS" BASIS,
+%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+%  See the License for the specific language governing permissions and
+%  limitations under the License.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 :- object(fp_named_characters).
 
 	:- info([
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
-		date is 2022-2-22,
+		date is 2022-02-22,
 		comment is 'DCTG for a named characters for format prolog system.'
 	]).
 
@@ -77,65 +97,65 @@
 	/*------------------------------------------------------------------*/
 
 	lparen ::={ [C] = "("},
-	           [p(C)].
+		 [p(C)].
 
 
 
 	/*------------------------------------------------------------------*/
 
 	rparen ::={ [C] = ")"},
-	           [p(C)].
+		 [p(C)].
 
 
 
 	/*------------------------------------------------------------------*/
 
 	lbrace ::={ [C] = "{"},
-	           [p(C)].
+		 [p(C)].
 
 
 
 	/*------------------------------------------------------------------*/
 
 	rbrace ::={ [C] = "}"},
-	           [p(C)].
+		 [p(C)].
 
 
 
 	/*------------------------------------------------------------------*/
 
 	lbracket ::=
-	          { [C] = "["},
-	           [p(C)].
+		{ [C] = "["},
+		 [p(C)].
 
 
 
 	/*------------------------------------------------------------------*/
 
 	rbracket ::=
-	          { [C] = "]"},
-	           [p(C)].
+		{ [C] = "]"},
+		 [p(C)].
 
 
 
 	/*------------------------------------------------------------------*/
 
 	comma ::= { [C] = ","},
-	           [p(C)].
+		 [p(C)].
 
 
 
 	/*------------------------------------------------------------------*/
 
 	period ::={ [C] = "."},
-	           [p(C)].
+		 [p(C)].
 
 
 
 	/*------------------------------------------------------------------*/
 
 	vertbar ::=
-	          { [C] = "|"},
-	           [p(C)].
+		{ [C] = "|"},
+		 [p(C)].
 
 :- end_object.
