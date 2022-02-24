@@ -1,9 +1,29 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Copyright (c) 2022 Lindsey Spratt
+%  SPDX-License-Identifier: MIT
+%
+%  Licensed under the MIT License (the "License");
+%  you may not use this file except in compliance with the License.
+%  You may obtain a copy of the License at
+%
+%      https://opensource.org/licenses/MIT
+%
+%  Unless required by applicable law or agreed to in writing, software
+%  distributed under the License is distributed on an "AS IS" BASIS,
+%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+%  See the License for the specific language governing permissions and
+%  limitations under the License.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 :- object(fp_comment_body).
 
 	:- info([
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
-		date is 2022-2-22,
+		date is 2022-02-22,
 		comment is 'DCTG for a Prolog comment body for format prolog system.'
 	]).
 
@@ -39,7 +59,7 @@
 	:- uses(fp_whitespace_handling, [wlsDCTG/3, nnl_wlsDCTG/3]).
 	:- uses(fp_format_directives, [start_skip_directiveDCTG/3, end_skip_directiveDCTG/3]).
 	:- uses(fp_comment_items, [nls_itemDCTG/3, skip_itemDCTG/3]).
-	
+	:- uses(list, [member/2]).
 
 	/*------------------------------------------------------------------*/
 	/* comment_body(End) - parses the contents of a comment, starting after
@@ -47,37 +67,37 @@
 	   comment end indicator.
 	   */  
 	comment_body(End) ::=
-	          comment_body_wls(End),
-	          comment_end(End),
-	          !
+		comment_body_wls(End),
+		comment_end(End),
+		!
 	 <:> display(StartLine, Col) ::-
-	               display_comment_end(StartLine, Col, t("*/")).
+		     display_comment_end(StartLine, Col, t("*/")).
 
 	comment_body(End) ::=
-	          start_skip_directive ^^ S,
-	          comment_body_skip(End, NewEnd) ^^ Cs,
-	          comment_body(NewEnd) ^^ Cb
+		start_skip_directive ^^ S,
+		comment_body_skip(End, NewEnd) ^^ Cs,
+		comment_body(NewEnd) ^^ Cb
 	 <:> display(StartLine, Col) ::-
-	               S ^^ display,
-	               Cs ^^ display,
-	               Cb ^^ display(StartLine, Col).
+		     S ^^ display,
+		     Cs ^^ display,
+		     Cb ^^ display(StartLine, Col).
 
 	comment_body(End) ::=
-	          nls_item ^^ H,
-	          comment_body(End) ^^ C
+		nls_item ^^ H,
+		comment_body(End) ^^ C
 	 <:> display(StartLine, Col) ::-
-	               H ^^ display(Col),
-	               C ^^ display(StartLine, Col).
+		     H ^^ display(Col),
+		     C ^^ display(StartLine, Col).
 
 
 	/*------------------------------------------------------------------*/
 
 	comment_body_wls(nl) ::=
-	          !,
-	          nnl_wls.
+		!,
+		nnl_wls.
 
 	comment_body_wls(_) ::=
-	          wls.
+		wls.
 
 
 	/*------------------------------------------------------------------*/
@@ -88,56 +108,56 @@
 	   ends.
 	   */  
 	comment_body_skip(End0, End1) ::=
-	          comment_end(End0),
-	          !,
-	          comment_body_skip(none, End1) ^^ Cbs
+		comment_end(End0),
+		!,
+		comment_body_skip(none, End1) ^^ Cbs
 	 <:> display ::-
-	               display_item(1, End0),
-	               Cbs ^^ display.
+		     display_item(1, End0),
+		     Cbs ^^ display.
 
 	comment_body_skip(none, End1) ::=
-	          comment_start(Start, End0),
-	          !,
-	          comment_body_skip(End0, End1) ^^ Cbs
+		comment_start(Start, End0),
+		!,
+		comment_body_skip(End0, End1) ^^ Cbs
 	 <:> display ::-
-	               display_item(1, Start),
-	               Cbs ^^ display.
+		     display_item(1, Start),
+		     Cbs ^^ display.
 
 	comment_body_skip(End, End) ::=
-	          end_skip_directive ^^ S,
-	          !
+		end_skip_directive ^^ S,
+		!
 	 <:> display ::-
-	               S ^^ display.
+		     S ^^ display.
 
 	comment_body_skip(End0, End1) ::=
-	          skip_item ^^ H,
-	          !,
-	          comment_body_skip(End0, End1) ^^ Cbs
+		skip_item ^^ H,
+		!,
+		comment_body_skip(End0, End1) ^^ Cbs
 	 <:> display ::-
-	               H ^^ display,
-	               Cbs ^^ display.
+		     H ^^ display,
+		     Cbs ^^ display.
 
 
    	/*------------------------------------------------------------------*/
 
    	comment_start(t("/*"), t("*/")) ::=
-   	           [t("/*")].
+   		 [t("/*")].
 
    	comment_start(t("%"), nl) ::=
-   	           [t("%")].
+   		 [t("%")].
 
 
    	/*------------------------------------------------------------------*/
 
    	comment_end(t("*/")) ::=
-   	           [t("*/")].
+   		 [t("*/")].
 
    	comment_end(nl) ::=
-   	           [w(Codes)],
-   	          {member(10, Codes)
-   	           ;
-   	           member(13, Codes)
-   	          }.
+   		 [w(Codes)],
+   		{member(10, Codes)
+   		 ;
+   		 member(13, Codes)
+   		}.
 
 :- end_object.
 

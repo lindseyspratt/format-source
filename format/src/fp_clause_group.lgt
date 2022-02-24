@@ -1,3 +1,23 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Copyright (c) 2022 Lindsey Spratt
+%  SPDX-License-Identifier: MIT
+%
+%  Licensed under the MIT License (the "License");
+%  you may not use this file except in compliance with the License.
+%  You may obtain a copy of the License at
+%
+%      https://opensource.org/licenses/MIT
+%
+%  Unless required by applicable law or agreed to in writing, software
+%  distributed under the License is distributed on an "AS IS" BASIS,
+%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+%  See the License for the specific language governing permissions and
+%  limitations under the License.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 :- object(fp_clause_group).
 
 	:- uses(fpu_output_position, [fp_nl/0, fp_writenl/1]).
@@ -7,6 +27,8 @@
 	:- uses(fp_named_characters, [periodDCTG/3]).
 	:- uses(fp_error_skip, [error_skipDCTG/4]).
 	:- uses(fp_term_expression, [term_expressionDCTG/6]).
+	:- uses(format, [format/3]).
+	:- uses(list, [member/2]).
 
 	dctg_main(clause_group/1, display/0).
 
@@ -16,15 +38,15 @@
 %   , roughly).
 %   */
 %clause_group_list ::=
-%          clause_group ^^ ClauseGroup,
-%          !,
-%          clause_group_list ^^ List
+%	clause_group ^^ ClauseGroup,
+%	!,
+%	clause_group_list ^^ List
 % <:> display ::-
-%               ClauseGroup ^^ display,
-%               List ^^ display.
+%	     ClauseGroup ^^ display,
+%	     List ^^ display.
 %
 %clause_group_list ::=
-%          []
+%	[]
 % <:> display.
 
 
@@ -34,33 +56,33 @@
 	   functor.  The identifying functor is determined by the "clause" nonterminal.
 	   */  
 	clause_group(Mode) ::=
-	          comments ^^ Cmt,
-	          clause(Mode, IdentifyingFunctor) ^^ Clause,
-	          {format(user, '^N^nParsed first clause for ^w.', [IdentifyingFunctor])},
-	          clause_group(Mode, IdentifyingFunctor) ^^ ClauseGroup,
-	          {format(user, '^N^nFinished clause group for ^w.',  [IdentifyingFunctor]),
-	           !}
+		comments ^^ Cmt,
+		clause(Mode, IdentifyingFunctor) ^^ Clause,
+		{format(user, '~N~nParsed first clause for ~w.', [IdentifyingFunctor])},
+		clause_group(Mode, IdentifyingFunctor) ^^ ClauseGroup,
+		{format(user, '~N~nFinished clause group for ~w.',  [IdentifyingFunctor]),
+		 !}
 	 <:> display ::-
-	               format('^N^w^66(-)^w',  ['/*', '*/']),
-	               fp_nl, % resets the known current position to 0 as a side-effect. 
-	               Cmt ^^ display(1),
-	               Clause ^^ display,
-	               ClauseGroup ^^ display,
-	               fp_nl,
-	               fp_nl.
+		     format('~N~w~66(-)~w',  ['/*', '*/']),
+		     fp_nl, % resets the known current position to 0 as a side-effect. 
+		     Cmt ^^ display(1),
+		     Clause ^^ display,
+		     ClauseGroup ^^ display,
+		     fp_nl,
+		     fp_nl.
 				   
 	clause_group(Mode, IdentifyingFunctor) ::=
-	          comments ^^ Cmt,
-	          clause(Mode, IdentifyingFunctor) ^^ Clause,
-	          !,
-	          clause_group(Mode, IdentifyingFunctor) ^^ List
+		comments ^^ Cmt,
+		clause(Mode, IdentifyingFunctor) ^^ Clause,
+		!,
+		clause_group(Mode, IdentifyingFunctor) ^^ List
 	 <:> display ::-
-	               Cmt ^^ display(1),
-	               Clause ^^ display,
-	               List ^^ display.
+		     Cmt ^^ display(1),
+		     Clause ^^ display,
+		     List ^^ display.
 
 	clause_group(_, _) ::=
-	           []
+		 []
 	 <:> display.
 
 
@@ -75,34 +97,34 @@
 	   which is the first argument to the '<:>'.
 	   */  
 	clause(_Mode, IdentifyingFunctor) ::=
-	          term_expression(clause, 0, '=<') ^^ T,
-	          comments ^^ FirstComments,
-	          period,
-	          !, /* for performance, avoid fruitless backtracking. */ 
-	          trailing_comment ^^ TrailingComment,
-	          {clause_functor(T, IdentifyingFunctor),
-	           (IdentifyingFunctor == '*NECK*'
-	             -> eval_clause(T)
-	            ;
-	            true
-	           )
-	          }
+		term_expression(clause, 0, '=<') ^^ T,
+		comments ^^ FirstComments,
+		period,
+		!, /* for performance, avoid fruitless backtracking. */ 
+		trailing_comment ^^ TrailingComment,
+		{clause_functor(T, IdentifyingFunctor),
+		 (IdentifyingFunctor == '*NECK*'
+		   -> eval_clause(T)
+		  ;
+		  true
+		 )
+		}
 	 <:> display ::-
-	               fp_nl,
-	               T ^^ display(1),
-	               fp_writenl('.'),
-	               adjusted_pos(1, 1, Col),
-	               FirstComments ^^ display(Col),
-	               TrailingComment ^^ display(Col).
+		     fp_nl,
+		     T ^^ display(1),
+		     fp_writenl('.'),
+		     adjusted_pos(1, 1, Col),
+		     FirstComments ^^ display(Col),
+		     TrailingComment ^^ display(Col).
 	clause(partial, _IdentifyingFunctor) ::=
-	          {[P] = "."},
-	          error_skip(p(P)) ^^ S
+		{[P] = "."},
+		error_skip(p(P)) ^^ S
 	 <:> display ::-
-	               fp_nl,
-	               fp_writenl('***** Begin Skip *****'),
-	               S ^^ display,
-	               fp_nl,
-	               fp_writenl('***** End Skip *****').
+		     fp_nl,
+		     fp_writenl('***** Begin Skip *****'),
+		     S ^^ display,
+		     fp_nl,
+		     fp_writenl('***** End Skip *****').
 
 	clause_functor(T, Functor) :-
 		T ^^ functor(F),
@@ -115,7 +137,7 @@
 			-> Syntax ^^ args( [H, _]),
 		 	   H ^^ functor(Functor)
 	    ;
-	    Functor = '<:>'
+	    Functor = ('<:>')
 		).
 	% plain rule, DCG, DCTG without semantics.
 	clause_functor1(F, T, Functor) :-

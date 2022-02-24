@@ -1,9 +1,29 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Copyright (c) 2022 Lindsey Spratt
+%  SPDX-License-Identifier: MIT
+%
+%  Licensed under the MIT License (the "License");
+%  you may not use this file except in compliance with the License.
+%  You may obtain a copy of the License at
+%
+%      https://opensource.org/licenses/MIT
+%
+%  Unless required by applicable law or agreed to in writing, software
+%  distributed under the License is distributed on an "AS IS" BASIS,
+%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+%  See the License for the specific language governing permissions and
+%  limitations under the License.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 :- object(fp_format_directives).
 
 	:- info([
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
-		date is 2022-2-22,
+		date is 2022-02-22,
 		comment is 'DCTG for a Prolog comment body for format prolog system.'
 	]).
 
@@ -35,47 +55,47 @@
 	/*------------------------------------------------------------------*/
 
 	start_skip_directive ::=
-	          format_key ^^ F,
-	           [t("off"), t("$")]
+		format_key ^^ F,
+		 [t("off"), t("$")]
 	 <:> display ::-
-	               F ^^ display,
-	               fp_write('off$').
+		     F ^^ display,
+		     fp_write('off$').
 
 
 
 	/*------------------------------------------------------------------*/
 
 	end_skip_directive ::=
-	          format_key ^^ F,
-	           [t("on"), t("$")]
+		format_key ^^ F,
+		 [t("on"), t("$")]
 	 <:> display ::-
-	               F ^^ display,
-	               fp_write('on$').
+		     F ^^ display,
+		     fp_write('on$').
 
 
 
 	/*------------------------------------------------------------------*/
 
 /*	format_directive ::=
-	          format_key ^^ K,
-	          wls,
-	          term_expression(clause, 0, '=<') ^^ T,
-	           [t("$")],
-	          {eval_goal(T)}
+		format_key ^^ K,
+		wls,
+		term_expression(clause, 0, '=<') ^^ T,
+		 [t("$")],
+		{eval_goal(T)}
 	 <:> display(Col) ::-
-	               K ^^ display,
-	               adjusted_pos(Col, 1, Ncol),
-	               T ^^ display(Ncol),
-	               fp_write('$').
+		     K ^^ display,
+		     adjusted_pos(Col, 1, Ncol),
+		     T ^^ display(Ncol),
+		     fp_write('$').
 */
 
 
 	/*------------------------------------------------------------------*/
 
 	format_key ::=
-	           [t("$"), t("fmt"), t(":")]
+		 [t("$"), t("fmt"), t(":")]
 	 <:> display ::-
-	               fp_write('$fmt:').
+		     fp_write('$fmt:').
 
 :- end_object.
 
