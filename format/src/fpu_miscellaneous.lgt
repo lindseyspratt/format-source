@@ -40,22 +40,12 @@
 		comment is 'Extends the context when ``NewContext`` is `expression`, leaves it unchanged otherwise.',
 		argnames is ['OldContext', 'NewContext', 'ExtendedContext']
 	]).
-
-	:- dynamic('format_prolog$read_op'/3).
-	:- dynamic('format_prolog$read_operator_class'/3).
 	
 	%------------------------------------------------------------------
 
 	precedence_constraint(Prec0, Comp, Prec1) :-
 		Goal =..  [Comp, Prec0, Prec1],
 		call(Goal).
-
-
-	%------------------------------------------------------------------
-
-	retract_read_info :-
-		retractall('format_prolog$read_op'(_, _, _)),
-		retractall('format_prolog$read_operator_class'(_, _, _)).
 
 
 	extend_context(clause, expression, clause) :- !.
