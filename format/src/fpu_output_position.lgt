@@ -23,7 +23,7 @@
 	:- info([
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
-		date is 2022-02-22,
+		date is 2022-02-25,
 		comment is 'Utilities for output for format prolog system.'
 	]).
 
@@ -73,9 +73,12 @@
 		comment is 'Write a list of terms followed by a newline on current output.',
 		argnames is ['List']
 	]).
-	
-	:- dynamic('format_prolog$known_current_position'/2).
-	:- dynamic('format_prolog$known_line_count'/3).
+
+	:- private(known_current_position_/2).
+	:- dynamic(known_current_position_/2).
+
+	:- private(known_line_count_/3).
+	:- dynamic(known_line_count_/3).
 	
 	/*------------------------------------------------------------------*/
 
@@ -87,8 +90,10 @@
 		write(Channel, Symbol),
 		atom_codes(Symbol, Codes),
 		length_after_newline(Codes, Length, NewLine),
-		(NewLine = no -> true
-		 ; reset_current_position(Channel)),
+		(	NewLine = no
+		->	true
+		;	reset_current_position(Channel)
+		),
 		adjust_current_position(Channel, Length).
 
 	length_after_newline(Codes, Length, NewLine) :-
@@ -96,9 +101,11 @@
 
 	length_after_newline([], Length, Length, _).
 	length_after_newline([C|OCs], LIn, LOut, NewLine) :-
-		([C] = "\n"
-		   -> LNext = 0, NewLine = yes
-		; LNext is LIn + 1),
+		(	[C] = "\n"
+		->	LNext = 0,
+			NewLine = yes
+		;	LNext is LIn + 1
+		),
 		length_after_newline(OCs, LNext, LOut, NewLine).
 
 	/*------------------------------------------------------------------*/
@@ -108,8 +115,7 @@
 		fp_writenl(Channel, Symbol).
 
 	fp_writenl(Channel, Symbol) :-
-		write(Channel, Symbol),
-			  nl(Channel),
+		write(Channel, Symbol), nl(Channel),
 		reset_current_position(Channel).
 
 
@@ -146,24 +152,22 @@
 	/*------------------------------------------------------------------*/
 
 	known_current_position(Channel, Position) :-
-		'format_prolog$known_current_position'(Channel, Position) -> true
-		;
-		Position = 1.
+		(	known_current_position_(Channel, Position)
+		->	true
+		;	Position = 1
+		).
 
 
 
 	/*------------------------------------------------------------------*/
 
 	adjust_current_position(Channel, Change) :-
-		retract('format_prolog$known_current_position'(Channel, OldPosition)
-		       )
-		 -> NewPosition is OldPosition + Change,
-		    assertz('format_prolog$known_current_position'(Channel, NewPosition)
-			)
-		;
-			  logtalk::print_message(warning, format_prolog, 'adjust_current_position: no recorded position.'),
-		assertz('format_prolog$known_current_position'(Channel, Change)
-		      ).
+		(	retract(known_current_position_(Channel, OldPosition))
+		->	NewPosition is OldPosition + Change,
+			assertz(known_current_position_(Channel, NewPosition))
+		;	logtalk::print_message(warning, format_prolog, 'adjust_current_position: no recorded position.'),
+			assertz(known_current_position_(Channel, Change))
+		).
 
 
 
@@ -174,8 +178,8 @@
 		reset_current_position(Channel).
 
 	reset_current_position(Channel) :-
-		retractall('format_prolog$known_current_position'(Channel, _)),
-		assertz('format_prolog$known_current_position'(Channel, 1)),
+		retractall(known_current_position_(Channel, _)),
+		assertz(known_current_position_(Channel, 1)),
 		!.
 
 
@@ -185,7 +189,7 @@
 	initialize_output_position_info :-
 		reset_current_position(_),
 		% retractall('format_prolog$known_position'(_, _, _, _)),
-		retractall('format_prolog$known_line_count'(_, _, _)).
+		retractall(known_line_count_(_, _, _)).
 
 
 
@@ -198,13 +202,12 @@
 		(ColumnIn < 1 -> Column = 1; Column = ColumnIn),
 		current_column(P),
 		PositionDifference is Column - P,
-		(PositionDifference < 0
-		  -> fp_nl,
-		     Newline = yes,
-		     Pad is Column - 1
-		 ;
-		 Pad = PositionDifference,
-		 Newline = no
+		(	PositionDifference < 0
+		->	fp_nl,
+			Newline = yes,
+			Pad is Column - 1
+		;	Pad = PositionDifference,
+			Newline = no
 		),
 		fp_tab(Pad).
 
@@ -218,12 +221,9 @@
 	adjusted_pos(Column0, Add, Column1) :-
 		current_column(P),
 		Ncol is P + Add,
-		((Ncol < Column0
-		  ;
-		  Ncol > 70
-		 )-> Column1 = Column0
-		 ;
-		 Column1 = Ncol
+		(	(Ncol < Column0; Ncol > 70)
+		->	Column1 = Column0
+		;	Column1 = Ncol
 		).
 
 
@@ -262,11 +262,10 @@
 
 	stream_line_count(C, Line) :-
 		stream_property(C, position(OriginalPosition)), % cursor(C, OriginalPosition, OriginalPosition),
-		('format_prolog$known_line_count'(C, KnownPosition, KnownCount)
-		  -> true
-		 ;
-		 KnownPosition = 1,
-		 KnownCount = 1
+		(	known_line_count_(C, KnownPosition, KnownCount)
+		->	true
+		;	KnownPosition = 1,
+			KnownCount = 1
 		),
 		set_stream_position(C, position(KnownPosition)), % cursor(C, KnownPosition, KnownPosition),
 		stream_line_count(C, OriginalPosition, KnownCount, Line),
@@ -274,35 +273,29 @@
 		set_stream_position(C, position(OriginalPosition)). % cursor(C, OriginalPosition, OriginalPosition).
 
 	stream_line_count(C, OriginalPosition, CountIn, CountOut) :-
-		skip(C, 0'\n)
-		 -> stream_property(C, position(CurrentPosition)), % cursor(C, CurrentPosition, CurrentPosition),
-		    (CurrentPosition > OriginalPosition
-		      -> CountIn = CountOut
-		     ;
-		     CountNext is CountIn + 1,
-		     stream_line_count(C, OriginalPosition, CountNext, CountOut)
-		    )
-		;
-		CountIn = CountOut.
+		(	skip(C, 0'\n)
+		->	stream_property(C, position(CurrentPosition)), % cursor(C, CurrentPosition, CurrentPosition),
+			(	CurrentPosition > OriginalPosition
+			->	CountIn = CountOut
+			;	CountNext is CountIn + 1,
+				stream_line_count(C, OriginalPosition, CountNext, CountOut)
+			)
+		;	CountIn = CountOut
+		).
 
 
 
 	/*------------------------------------------------------------------*/
 
 	replace_line_count(C, Pos, Line) :-
-		(retract('format_prolog$known_line_count'(C, _, _))
-		 ;
-		 true
-		),
-			  !,
-			  assertz('format_prolog$known_line_count'(C, Pos, Line)).
+		ignore(retract(known_line_count_(C, _, _))),
+		assertz(known_line_count_(C, Pos, Line)).
 	
 	skip(Stream, Code) :-
 		get_code(Stream, Check),
-		((Code = Check; Check = -1)
-		  -> true
-		;
-		skip(Stream, Code)
+		(	(Code = Check; Check = -1)
+		->	true
+		;	skip(Stream, Code)
 		).
 
 	writeseqnl([]) :- nl.
