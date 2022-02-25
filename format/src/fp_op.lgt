@@ -24,7 +24,7 @@
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
 		date is 2022-02-24,
-		comment is 'Miscellaneous utilities for format prolog system.'
+		comment is 'Miscellaneous utilities for format-prolog system.'
 	]).
 
 	:- public(opDCTG/6).
@@ -42,22 +42,21 @@
 
 	op(Context, Prec, Associativity) ::=
 		op_token( [], Ocs),
-		{atom_codes(Op, Ocs),
-		 known_op(Prec, Associativity, Op, Context),
-		 (Ocs = ":-"
-		   -> Functor = '*NECK*'
-		  ;
-		  Functor = Op
-		 ),
-		 length(Ocs, Lo),
-		 Len is Lo + 1
+		{	atom_codes(Op, Ocs),
+			known_op(Prec, Associativity, Op, Context),
+			(	Ocs = ":-"
+			->	Functor = '*NECK*'
+			;	Functor = Op
+			),
+			length(Ocs, Lo),
+			Len is Lo + 1
 		}
 	 <:> (display(Col) ::-
-		      pos(Col),
-		      fp_write(Op)
-	     ),
-	     (len(Len)),
-	     (functor(Functor)).
+			pos(Col),
+			fp_write(Op)
+		),
+		(len(Len)),
+		(functor(Functor)).
 
 
 
@@ -69,20 +68,18 @@
 		op_token(Ics, Ocs).
 
 	op_token(Cs, Cs) ::=
-		 [].
+		[].
 
 
 
 	/*------------------------------------------------------------------*/
 
 	op_token1(Ncs) ::=
-		 [p(C)],
+		[p(C)],
 		{Ncs =  [C]},
 		!.
 
 	op_token1(Ncs) ::=
-		 [t(Ncs)].
+		[t(Ncs)].
 
 :- end_object.
-
-
