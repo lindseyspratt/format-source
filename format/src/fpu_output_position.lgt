@@ -49,14 +49,14 @@
 	:- public(pos/1).
 	:- mode(pos(-integer), one).
 	:- info(pos/1, [
-		comment is 'Pads (by writing zero or more spaces) the current output position to `Pos`, writing a newline before padding if `Pos` is less than the current output position.',
+		comment is 'Pads (by writing zero or more spaces) the current output position to ``Pos``, writing a newline before padding if ``Pos`` is less than the current output position.',
 		argnames is ['Pos']
 	]).
 
 	:- public(adjusted_pos/3).
 	:- mode(adjusted_pos(+integer, +integer, -integer), one).
 	:- info(adjusted_pos/3, [
-		comment is 'Calculates `ColumnOut` based on the current output position plus `Add` (`AdjustedCurrent`) compared to `ColumnIn`: if `AdjustedCurrent` is between `ColumnIn` and 70 then `ColumnOut` is `AdjustedCurrent`, otherwise it is bound to `ColumnIn`.',
+		comment is 'Calculates ``ColumnOut`` based on the current output position plus ``Add`` (``AdjustedCurrent``) compared to ``ColumnIn``: if ``AdjustedCurrent`` is between ``ColumnIn`` and 70 then ``ColumnOut`` is ``AdjustedCurrent``, otherwise it is bound to ``ColumnIn``.',
 		argnames is ['ColumnIn', 'Add', 'ColumnOut']
 	]).
 
@@ -79,7 +79,7 @@
 
 	:- private(known_line_count_/3).
 	:- dynamic(known_line_count_/3).
-	
+
 	/*------------------------------------------------------------------*/
 
 	fp_write(Symbol) :-
@@ -108,6 +108,7 @@
 		),
 		length_after_newline(OCs, LNext, LOut, NewLine).
 
+
 	/*------------------------------------------------------------------*/
 
 	fp_writenl(Symbol) :-
@@ -117,7 +118,6 @@
 	fp_writenl(Channel, Symbol) :-
 		write(Channel, Symbol), nl(Channel),
 		reset_current_position(Channel).
-
 
 
 	/*------------------------------------------------------------------*/
@@ -148,7 +148,6 @@
 		reset_current_position(Channel).
 
 
-
 	/*------------------------------------------------------------------*/
 
 	known_current_position(Channel, Position) :-
@@ -156,7 +155,6 @@
 		->	true
 		;	Position = 1
 		).
-
 
 
 	/*------------------------------------------------------------------*/
@@ -168,7 +166,6 @@
 		;	logtalk::print_message(warning, format_prolog, 'adjust_current_position: no recorded position.'),
 			assertz(known_current_position_(Channel, Change))
 		).
-
 
 
 	/*------------------------------------------------------------------*/
@@ -183,14 +180,12 @@
 		!.
 
 
-
 	/*------------------------------------------------------------------*/
 
 	initialize_output_position_info :-
 		reset_current_position(_),
-		% retractall('format_prolog$known_position'(_, _, _, _)),
+		% retractall(known_position_(_, _, _, _)),
 		retractall(known_line_count_(_, _, _)).
-
 
 
 	/*------------------------------------------------------------------*/
@@ -212,7 +207,6 @@
 		fp_tab(Pad).
 
 
-
 	/*------------------------------------------------------------------*/
 
 	adjusted_pos(Column0, Column1) :-
@@ -227,7 +221,6 @@
 		).
 
 
-
 	/*------------------------------------------------------------------*/
 
 	current_column(Col) :-
@@ -235,13 +228,11 @@
 		line_position(Stream, Col).
 
 
-
 	/*------------------------------------------------------------------*/
 
 	current_line(Line) :-
 		current_output(Stream),
 		stream_line_count(Stream, Line).
-
 
 
 	/*------------------------------------------------------------------*/
@@ -255,7 +246,6 @@
 
 	line_position(C, P) :-
 		known_current_position(C, P).
-
 
 
 	/*------------------------------------------------------------------*/
@@ -282,7 +272,6 @@
 			)
 		;	CountIn = CountOut
 		).
-
 
 
 	/*------------------------------------------------------------------*/

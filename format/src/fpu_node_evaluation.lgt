@@ -24,8 +24,8 @@
 	:- info([
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
-		date is 2022-02-22,
-		comment is 'Utilities for handling format-specific operator information at format-time in the annotated abstract syntax tree for format-prolog system.'
+		date is 2022-02-25,
+		comment is 'Utilities for handling format-specific operator information at format-time in the annotated abstract syntax tree for format prolog system.'
 	]).
 
 	:- public(eval_clause/1).
@@ -76,18 +76,37 @@
 		comment is 'Unifies with the recorded fact ``Op``, ``Context``, and ``Class`` for the operator class.',
 		argnames is ['Op', 'Context', 'Class']
 	]).
-	
-	:- dynamic('format_prolog$read_op'/3).
-	:- dynamic('format_prolog$read_operator_class'/3).
-	
+
+	:- public(retract_read_info/0).
+	:- mode(retract_read_info, one).
+	:- info(retract_read_info/0, [
+		comment is '.'
+	]).
+
+	:- private(read_op_/3).
+	:- dynamic(read_op_/3).
+
+	:- private(read_operator_class_/3).
+	:- dynamic(read_operator_class_/3).
+
+
+	%------------------------------------------------------------------
+
 	^^(A, B) :- ::eval(A, B).
+
+
+	%------------------------------------------------------------------
+
+	retract_read_info :-
+		retractall(read_op_(_, _, _)),
+		retractall(read_operator_class_(_, _, _)).
+
 
 	/*------------------------------------------------------------------*/
 
 	eval_clause(T) :-
 		T ^^ args( [Goal]),
 		eval_goal(Goal).
-
 
 
 	/*------------------------------------------------------------------*/
@@ -100,7 +119,6 @@
 		;	[Goal] = Args,
 			eval_goal(Goal)
 		).
-
 
 
 	/*------------------------------------------------------------------*/
@@ -118,7 +136,6 @@
 		).
 
 
-
 	/*------------------------------------------------------------------*/
 
 	eval_op(OpGoal) :-
@@ -129,20 +146,17 @@
 		record_read_op(Prec, Assoc, Op).
 
 
-
 	/*------------------------------------------------------------------*/
 
 	read_op(Prec, Assoc, Op) :-
-		'format_prolog$read_op'(Prec, Assoc, Op).
-
+		read_op_(Prec, Assoc, Op).
 
 
 	/*------------------------------------------------------------------*/
 
 	record_read_op(Prec, Assoc, Op) :-
-		retractall('format_prolog$read_op'(_, Assoc, Op)),
-		assertz('format_prolog$read_op'(Prec, Assoc, Op)).
-
+		retractall(read_op_(_, Assoc, Op)),
+		assertz(read_op_(Prec, Assoc, Op)).
 
 
 	/*------------------------------------------------------------------*/
@@ -155,18 +169,16 @@
 		record_read_operator_class(Op, Context, Class).
 
 
-
 	/*------------------------------------------------------------------*/
 
 	read_operator_class(Op, Context, Class) :-
-		'format_prolog$read_operator_class'(Op, Context, Class).
-
+		read_operator_class_(Op, Context, Class).
 
 
 	/*------------------------------------------------------------------*/
 
 	record_read_operator_class(Op, Context, Class) :-
-		retractall('format_prolog$read_operator_class'(Op, Context, _)),
-		assertz('format_prolog$read_operator_class'(Op, Context, Class)).
+		retractall(read_operator_class_(Op, Context, _)),
+		assertz(read_operator_class_(Op, Context, Class)).
 
 :- end_object.
