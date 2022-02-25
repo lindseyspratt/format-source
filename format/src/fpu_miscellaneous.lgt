@@ -24,7 +24,7 @@
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
 		date is 2022-02-22,
-		comment is 'Miscellaneous utilities for format prolog system.'
+		comment is 'Miscellaneous utilities for format-prolog system.'
 	]).
 
 	:- public(precedence_constraint/3).
@@ -37,7 +37,7 @@
 	:- public(extend_context/3).
 	:- mode(extend_context(+atom, +atom, -atom), one).
 	:- info(extend_context/3, [
-		comment is 'Extends the context when `NewContext` is `expression`, leaves it unchanged otherwise.',
+		comment is 'Extends the context when ``NewContext`` is `expression`, leaves it unchanged otherwise.',
 		argnames is ['OldContext', 'NewContext', 'ExtendedContext']
 	]).
 
@@ -64,5 +64,5 @@
 		!.
 	extend_context(_, NewContext, NewContext) :-
 		NewContext \= expression.
-		  
+
 :- end_object.

@@ -25,20 +25,20 @@
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
 		date is 2022-02-22,
-		comment is 'Utilities for display for format prolog system.'
+		comment is 'Utilities for display for format-prolog system.'
 	]).
 
 	:- public(display_comment/3).
 	:- mode(display_comment(+integer, +atom, +term), one).
 	:- info(display_comment/3, [
-		comment is 'Display the comment with annotated abstract syntax tree `ParseTree`, indenting by `Indent`.',
+		comment is 'Display the comment with annotated abstract syntax tree ``ParseTree``, indenting by ``Indent``.',
 		argnames is ['Indent', 'StartToken', 'ParseTree']
 	]).
 
 	:- public(display_comment_end/3).
 	:- mode(display_comment_end(+integer, +integer, +term), one).
 	:- info(display_comment_end/3, [
-		comment is 'Display the comment `End` at line count `StartLine`, indenting by `Indent`.',
+		comment is 'Display the comment ``End`` at line count ``StartLine``, indenting by ``Indent``.',
 		argnames is ['StartLine', 'Indent', 'EndToken']
 	]).
 	
@@ -46,14 +46,14 @@
 	:- public(display_element_list/6).
 	:- mode(display_element_list(+atom, +integer, +integer, +term, +term, +term), one).
 	:- info(display_element_list/6, [
-		comment is 'Display padded by `Indent` fit to `Len` the head term `T`, comment `C`, and tail list `L`.',
+		comment is 'Display padded by ``Indent`` fit to ``Len`` the head term ``T``, comment ``C``, and tail list ``L``.',
 		argnames is ['Mode', 'Indent', 'Len', 'T', 'C', 'L']
 	]).
 
 	:- public(tst_display/3).
 	:- mode(tst_display(+integer, +integer, +term), one).
 	:- info(tst_display/3, [
-		comment is 'Display padded by `Indent` a term structure `tail` from annotated abstract syntax tree `Arguments` and comment AAST `Comments`.',
+		comment is 'Display padded by ``Indent`` a term structure `tail` from annotated abstract syntax tree ``Arguments`` and comment AAST ``Comments``.',
 		argnames is ['Indent', 'Arguments', 'Comments']
 	]).
 
@@ -70,30 +70,26 @@
 	/*------------------------------------------------------------------*/
 
 	display_comment(Col, _, B) :-
-	         pos(Col),
-	         current_line(L1),
-	         NextCol is Col + 3,
-	         display_item(1, t([0'/, 0'*])), % The explicit escapes avoid syntax-coloring bug in handling "/ *"
-	         B ^^ display(L1, NextCol).
+		pos(Col),
+		current_line(L1),
+		NextCol is Col + 3,
+		display_item(1, t([0'/, 0'*])), % The explicit escapes avoid syntax-coloring bug in handling "/ *"
+		B ^^ display(L1, NextCol).
 
 
 	/*------------------------------------------------------------------*/
 
 	display_comment_end(StartLine, Col, End) :-
 		current_line(L2),
-		((StartLine =:= L2
-		  ;
-		  End = nl
-		 )-> adjusted_pos(Col, 1, NextCol)
-		 ;
-		 NextCol = Col
+		(	(StartLine =:= L2; End = nl)
+		->	adjusted_pos(Col, 1, NextCol)
+		;	NextCol = Col
 		),
 		pos(NextCol),
-		(End = nl
-		  -> fp_nl
-		 ;
-		 display_item(NextCol, End),
-		 fp_tab(1)
+		(	End = nl
+		->	fp_nl
+		;	display_item(NextCol, End),
+			fp_tab(1)
 		).
 
 
@@ -104,59 +100,54 @@
 		operator_class(Opf, Context, Class),
 		class_indent(Class, ClassIndent),
 		(
-			   % Rewrite the user_display_infix_term implementation to use Logtalk hook technique.
-			   %def(user_display_infix_term),
-		 %user_display_infix_term(Class, Col, Op, Ct, Cr, T)
-		 % -> true
-		 %;
-		 Class = neck
-		  -> adjusted_pos(Col, 1, Ncol1),
-		     Op ^^ display(Ncol1),
-		     adjusted_pos(Col, 1, Ncol2),
-		     Ct ^^ display(Ncol2),
-		     Ncol3 is Col + ClassIndent,
-		     pos(Ncol3),
-		     Cr ^^ display(Ncol3),
-		     T ^^ display(Ncol3)
-		 ;
-		 (Class = conjunction
-		  ;
-		  Class = disjunction(2)
-		 )-> adjusted_pos(Col, Ncol1),
-		     Op ^^ display(Ncol1),
-		     adjusted_pos(Col, 1, Ncol2),
-		     Ct ^^ display(Ncol2),
-		     Cr ^^ display(Col),
-		     T ^^ display(Col)
-		 ;
-		 Class = disjunction(1)
-		  -> pos(Col),
-		     Op ^^ display(Col),
-		     adjusted_pos(Col, 1, Ncol1),
-		     Ct ^^ display(Ncol1),
-		     Cr ^^ display(Col),
-		     T ^^ display(Col)
-		 ;
-		 Class = dependent_clause
-		  -> Ncol1 is Col + ClassIndent,
-		     pos(Ncol1),
-		     Op ^^ display(Ncol1),
-		     adjusted_pos(Ncol1, 1, Ncol2),
-		     Ct ^^ display(Ncol2),
-		     Cr ^^ display(Ncol2),
-		     T ^^ display(Ncol2)
-		 ;
-		 Class = general
-		  -> adjusted_pos(Col, 1, Ncol1),
-		     Op ^^ display(Ncol1),
-		     adjusted_pos(Col, 1, Ncol2),
-		     Ct ^^ display(Ncol2),
-		     Cr ^^ display(Ncol2),
-		     adjusted_pos(Col, 1, Ncol3),
-		     T ^^ display(Ncol3)
-			   ;
- 			   logtalk::print_message(error, format_prolog, 'display_infix_term: unrecognized class ~w.'+[Class]),
-			   throw(error(system_error, display_infix_term/6))
+			% Rewrite the user_display_infix_term implementation to use Logtalk hook technique.
+			%def(user_display_infix_term),
+			%user_display_infix_term(Class, Col, Op, Ct, Cr, T)
+			% -> true
+			%;
+			Class = neck
+			->	adjusted_pos(Col, 1, Ncol1),
+				Op ^^ display(Ncol1),
+				adjusted_pos(Col, 1, Ncol2),
+				Ct ^^ display(Ncol2),
+				Ncol3 is Col + ClassIndent,
+				pos(Ncol3),
+				Cr ^^ display(Ncol3),
+				T ^^ display(Ncol3)
+			;	(	Class = conjunction
+				;	Class = disjunction(2)
+				)
+			->	adjusted_pos(Col, Ncol1),
+				Op ^^ display(Ncol1),
+				adjusted_pos(Col, 1, Ncol2),
+				Ct ^^ display(Ncol2),
+				Cr ^^ display(Col),
+				T ^^ display(Col)
+			;	Class = disjunction(1)
+			-> pos(Col),
+				Op ^^ display(Col),
+				adjusted_pos(Col, 1, Ncol1),
+				Ct ^^ display(Ncol1),
+				Cr ^^ display(Col),
+				T ^^ display(Col)
+			;	Class = dependent_clause
+			->	Ncol1 is Col + ClassIndent,
+				pos(Ncol1),
+				Op ^^ display(Ncol1),
+				adjusted_pos(Ncol1, 1, Ncol2),
+				Ct ^^ display(Ncol2),
+				Cr ^^ display(Ncol2),
+				T ^^ display(Ncol2)
+			;	Class = general
+			->	adjusted_pos(Col, 1, Ncol1),
+				Op ^^ display(Ncol1),
+				adjusted_pos(Col, 1, Ncol2),
+				Ct ^^ display(Ncol2),
+				Cr ^^ display(Ncol2),
+				adjusted_pos(Col, 1, Ncol3),
+				T ^^ display(Ncol3)
+			;	logtalk::print_message(error, format_prolog, 'display_infix_term: unrecognized class ~w.'+[Class]),
+				throw(error(system_error, display_infix_term/6))
 		).
 
 
@@ -184,10 +175,9 @@
 		adjusted_pos(Col, Ncol2),
 		C ^^ display(Ncol2),
 		current_line(Ln2),
-		(Ln1 =:= Ln2
-		  -> true
-		 ;
-		 pos(Col)
+		(	Ln1 =:= Ln2
+		->	true
+		;	pos(Col)
 		),
 		fp_write(')').
 

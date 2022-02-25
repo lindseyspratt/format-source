@@ -30,7 +30,7 @@
 	:- public(format_prolog/2).
 	:- mode(format_prolog(+file, +file), one).
 	:- info(format_prolog/2, [
-		comment is 'Format `Source`file Prolog program to create `Output` file.',
+		comment is 'Format ``Source`` file Prolog program to create ``Output`` file.',
 		argnames is ['Source', 'Output']
 	]).
 
@@ -45,16 +45,15 @@
 		!,
 		current_output(Old),
 		tellx('temp.pl'),
-		(format_prolog1(full, Tokens)
-		  -> tellx(Old),
-					copy_file('temp.pl', Output),
-					delete_file('temp.pl')
-		 ;
-		 writeseqnl(['Unable to fully parse "', Source, '" . Partial formatting in `temp.pl` follows:']),
-			   toldx,
-			   tellx('partial.pl'),
-		 format_prolog1(partial, Tokens),
-		 tellx(Old)
+		(	format_prolog1(full, Tokens)
+		->	tellx(Old),
+			copy_file('temp.pl', Output),
+			delete_file('temp.pl')
+		;	writeseqnl(['Unable to fully parse "', Source, '" . Partial formatting in `temp.pl` follows:']),
+			toldx,
+			tellx('partial.pl'),
+			format_prolog1(partial, Tokens),
+			tellx(Old)
 		).
 
 	format_prolog1(Mode, Tokens) :-
@@ -66,13 +65,13 @@
 	format_clause_groups(_, []) :- !.
 
 	format_clause_groups(Mode, Tokens) :-
-        fp_nl,
+		fp_nl,
 		fp_clause_group::evaluate(Tokens, RemainingTokens, Mode), % display/0 is the evaluate semantics.
 		!,
 		format_clause_groups(Mode, RemainingTokens).
 
 	format_clause_groups(_, Tokens) :-
-        fp_nl,
+		fp_nl,
 		fp_comments::evaluate(Tokens, 1),
 		!.
 

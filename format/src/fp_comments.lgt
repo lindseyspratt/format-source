@@ -23,7 +23,7 @@
 	:- public(commentsDCTG/3).
 	:- mode(commentsDCTG(-term, +list, -list), one).
 	:- info(commentsDCTG/3, [
-		comment is 'Parse `Tokens` as a collection of Prolog comments to create the annotated abstract syntax tree `Tree`.',
+		comment is 'Parse ``Tokens`` as a collection of Prolog comments to create the annotated abstract syntax tree ``Tree``.',
 		argnames is ['Tree', 'Tokens', 'Remainder']
 	]).
 

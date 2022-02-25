@@ -24,7 +24,7 @@
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
 		date is 2022-02-22,
-		comment is 'Display items for format prolog system.'
+		comment is 'Display items for format-prolog system.'
 	]).
 
 	:- public(known_op/4).
@@ -47,9 +47,9 @@
 	% Contexts are 'clause',  'expression', 'argls', 'list'.
 
 	known_op(Prec, Assoc, Op, Context) :-
-		((Context == argls; Context == list)
-		  -> Op \== (',')
-		 ; true
+		(	(Context == argls; Context == list)
+		->	Op \== (',')
+		;	true
 		),
 		atom(Op),
 		current_op(Prec, Assoc, Op),
