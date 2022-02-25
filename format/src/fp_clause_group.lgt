@@ -32,29 +32,30 @@
 
 	dctg_main(clause_group/1, display/0).
 
-%/*------------------------------------------------------------------*/
-%/* clause_group_list parses a Prolog source file (or window). Thus, a
-%   file is viewed as containing any number of clause groups (procedures
-%   , roughly).
-%   */
-%clause_group_list ::=
-%	clause_group ^^ ClauseGroup,
-%	!,
-%	clause_group_list ^^ List
-% <:> display ::-
-%	     ClauseGroup ^^ display,
-%	     List ^^ display.
-%
-%clause_group_list ::=
-%	[]
-% <:> display.
+	%/*------------------------------------------------------------------*/
+	%/* clause_group_list parses a Prolog source file (or window). Thus, a
+	%   file is viewed as containing any number of clause groups (procedures
+	%   , roughly).
+	%   */
+	%clause_group_list ::=
+	%	clause_group ^^ ClauseGroup,
+	%	!,
+	%	clause_group_list ^^ List
+	% <:> display ::-
+	%	     ClauseGroup ^^ display,
+	%	     List ^^ display.
+	%
+	%clause_group_list ::=
+	%	[]
+	% <:> display.
 
 
 	/*------------------------------------------------------------------*/
 	/* clause_group parses a sequence of clauses which have the same "identifying functor"
 	   . For certain functors, the identifying functor is not the top-level
 	   functor.  The identifying functor is determined by the "clause" nonterminal.
-	   */  
+	   */
+
 	clause_group(Mode) ::=
 		comments ^^ Cmt,
 		clause(Mode, IdentifyingFunctor) ^^ Clause,
@@ -63,23 +64,23 @@
 		{format(user, '~N~nFinished clause group for ~w.',  [IdentifyingFunctor]),
 		 !}
 	 <:> display ::-
-		     format('~N~w~66(-)~w',  ['/*', '*/']),
-		     fp_nl, % resets the known current position to 0 as a side-effect. 
-		     Cmt ^^ display(1),
-		     Clause ^^ display,
-		     ClauseGroup ^^ display,
-		     fp_nl,
-		     fp_nl.
-				   
+			format('~N~w~66(-)~w',  ['/*', '*/']),
+			fp_nl, % resets the known current position to 0 as a side-effect. 
+			Cmt ^^ display(1),
+			Clause ^^ display,
+			ClauseGroup ^^ display,
+			fp_nl,
+			fp_nl.
+
 	clause_group(Mode, IdentifyingFunctor) ::=
 		comments ^^ Cmt,
 		clause(Mode, IdentifyingFunctor) ^^ Clause,
 		!,
 		clause_group(Mode, IdentifyingFunctor) ^^ List
 	 <:> display ::-
-		     Cmt ^^ display(1),
-		     Clause ^^ display,
-		     List ^^ display.
+			Cmt ^^ display(1),
+			Clause ^^ display,
+			List ^^ display.
 
 	clause_group(_, _) ::=
 		 []
@@ -110,21 +111,21 @@
 		 )
 		}
 	 <:> display ::-
-		     fp_nl,
-		     T ^^ display(1),
-		     fp_writenl('.'),
-		     adjusted_pos(1, 1, Col),
-		     FirstComments ^^ display(Col),
-		     TrailingComment ^^ display(Col).
+			fp_nl,
+			T ^^ display(1),
+			fp_writenl('.'),
+			adjusted_pos(1, 1, Col),
+			FirstComments ^^ display(Col),
+			TrailingComment ^^ display(Col).
 	clause(partial, _IdentifyingFunctor) ::=
 		{[P] = "."},
 		error_skip(p(P)) ^^ S
 	 <:> display ::-
-		     fp_nl,
-		     fp_writenl('***** Begin Skip *****'),
-		     S ^^ display,
-		     fp_nl,
-		     fp_writenl('***** End Skip *****').
+			fp_nl,
+			fp_writenl('***** Begin Skip *****'),
+			S ^^ display,
+			fp_nl,
+			fp_writenl('***** End Skip *****').
 
 	clause_functor(T, Functor) :-
 		T ^^ functor(F),
@@ -133,19 +134,18 @@
 	% DCTG with semantics.
 	clause_functor1('<:>', T, Functor) :-
 		!,
-		(T ^^ args( [Syntax, _]) 
-			-> Syntax ^^ args( [H, _]),
-		 	   H ^^ functor(Functor)
-	    ;
-	    Functor = ('<:>')
+		(	T ^^ args( [Syntax, _]) 
+		->	Syntax ^^ args( [H, _]),
+			H ^^ functor(Functor)
+		;	Functor = ('<:>')
 		).
 	% plain rule, DCG, DCTG without semantics.
 	clause_functor1(F, T, Functor) :-
 		member(F, ['*NECK*','==>','::=']),
 		!,
-		(T ^^ args( [H, _]) -> H ^^ functor(Functor)
-		;
-		Functor = F
+		(	T ^^ args( [H, _])
+		->	H ^^ functor(Functor)
+		;	Functor = F
 		).
 	% fact.
 	clause_functor1(F, _T, F).

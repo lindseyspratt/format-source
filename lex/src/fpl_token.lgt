@@ -27,13 +27,13 @@
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
 		date is 2022-02-22,
-		comment is 'token grammar for the format prolog source system lexical analysis.'
+		comment is 'Token grammar for the format-prolog source system lexical analysis.'
 	]).
 
 	:- public(token//3).
 	:- mode(token(-list, +atom, -atom), one).
 	:- info(token//3, [
-		comment is 'Parse the beginning of a list of codes into a list of token codes, updating the ModeIn to ModeOut where a mode is `comment` or `code`.',
+		comment is 'Parse the beginning of a list of codes into a list of token codes, updating the ``ModeIn`` to ``ModeOut`` where a mode is ``comment`` or ``code``.',
 		argnames is ['Codes', 'ModeIn', 'ModeOut']
 	]).
 
@@ -44,52 +44,61 @@
 	*/
 
 	token([Quote|X], code, code) -->
-	  {[Quote] = "'" ; [Quote] = """"},
-	  [Quote],
-	  !,
-	  quoted_char_list(Quote, X).
+		{	[Quote] = "'"
+		;	[Quote] = """"
+		},
+		[Quote],
+		!,
+		quoted_char_list(Quote, X).
 	token(Special, ModeIn, ModeOut) -->
-	  {Special = "/*",
-	    Special = [C1,C2]},
-	  [C1,C2],
-	  !,
-	  {ModeIn = code
-	       -> ModeOut = comment("*/")
-	   ; ModeOut = ModeIn}.
+		{	Special = "/*",
+			Special = [C1,C2]
+		},
+		[C1,C2],
+		!,
+		{	ModeIn = code
+		->	ModeOut = comment("*/")
+		;	ModeOut = ModeIn
+		}.
 	token(Special, ModeIn, ModeOut) -->
-	  {Special = "%",
-	    Special = [C]},
-	  [C],
-	  !,
-	  {ModeIn = code
-	       -> ModeOut = comment("\n")
-	   ; ModeOut = ModeIn}.
+		{	Special = "%",
+			Special = [C]
+		},
+		[C],
+		!,
+		{	ModeIn = code
+		->	ModeOut = comment("\n")
+		;	ModeOut = ModeIn
+		}.
 	token(Special, ModeIn, ModeOut) -->
-	  {Special = "*/",
-	    Special = [C1,C2]},
-	  [C1,C2],
-	  !,
-	  {ModeIn = comment(Special)
-	       -> ModeOut = code
-	   ; ModeOut = ModeIn}.
+		{	Special = "*/",
+			Special = [C1,C2]
+		},
+		[C1,C2],
+		!,
+		{	ModeIn = comment(Special)
+		->	ModeOut = code
+		;	ModeOut = ModeIn
+		}.
 	token([H|T], Mode, Mode) -->
-	  tokenc(Type, H),
-	  token_ls(Type, T).
+		tokenc(Type, H),
+		token_ls(Type, T).
 
 	token_ls(Type, [H|T]) -->
-	  tokenc(Type, H),
-	  !,
-	  token_ls(Type, T).
-	token_ls(_, []) --> [].
+		tokenc(Type, H),
+		!,
+		token_ls(Type, T).
+	token_ls(_, []) -->
+		[].
 
 	tokenc(_, _) -->
-	  "/*",
-	  {!, fail}.
+		"/*",
+		{!, fail}.
 	tokenc(_, _) -->
-	  "*/",
-	  {!, fail}.
+		"*/",
+		{!, fail}.
 	tokenc(Type, X) -->
-	  [X],
-	  {token_char(X, Type)}.
+		[X],
+		{token_char(X, Type)}.
 
 :- end_object.

@@ -27,20 +27,20 @@
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
 		date is 2022-02-22,
-		comment is 'whitespace grammar for the format prolog source system lexical analysis.'
+		comment is 'Whitespace grammar for the format-prolog source system lexical analysis.'
 	]).
 
 	:- public(whitespace//3).
 	:- mode(whitespace(-list, +atom, -atom), one).
 	:- info(whitespace//3, [
-		comment is 'Parse the beginning of a list of codes into a list of whitespace codes, updating the ModeIn to ModeOut where a mode is `comment` or `code`.',
+		comment is 'Parse the beginning of a list of codes into a list of whitespace codes, updating the ModeIn to ModeOut where a mode is ``comment`` or ``code``.',
 		argnames is ['Codes', 'ModeIn', 'ModeOut']
 	]).
 
 	:- public(punctuation//2).
 	:- mode(punctuation(-integer, -atom), one).
 	:- info(punctuation//2, [
-		comment is 'Parse the first code of a list of codes into a code and a mode where a mode is `comment` or unbound.',
+		comment is 'Parse the first code of a list of codes into a code and a mode where a mode is ``comment`` or unbound.',
 		argnames is ['Code', 'Mode']
 	]).
 
@@ -52,29 +52,33 @@
 	*/
 
 	whitespace([H|T], ModeIn, ModeOut) -->
-	  wsc(H),
-	  ws_list(T),
-	  {ModeIn = comment([Code]),
-	    member(Code, [H|T])
-	     -> ModeOut = code
-	   ; ModeOut = ModeIn}.
+		wsc(H),
+		ws_list(T),
+		{	ModeIn = comment([Code]),
+			member(Code, [H|T])
+		->	ModeOut = code
+		;	ModeOut = ModeIn
+		}.
 
 	ws_list([H|T]) -->
-	  wsc(H),
-	  {[H] \= "\n"},
-	  ws_list(T).
-	ws_list([]) --> [].
+		wsc(H),
+		{[H] \= "\n"},
+		ws_list(T).
+	ws_list([]) -->
+		[].
 
 	wsc(Char) -->
-	  [Char],
-	  {ws_char(Char)}.
+		[Char],
+		{ws_char(Char)}.
 
 	punctuation(Quote, comment(_)) -->
-	  {[Quote] = "'" ; [Quote] = """"},
-	  [Quote],
-	  !.
+		{	[Quote] = "'"
+		;	[Quote] = """"
+		},
+		[Quote],
+		!.
 	punctuation(X, _) -->
-	  [X],
-	  {punctuation_char(X)}.
+		[X],
+		{punctuation_char(X)}.
 
 :- end_object.

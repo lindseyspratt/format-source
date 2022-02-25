@@ -24,13 +24,13 @@
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
 		date is 2022-02-24,
-		comment is 'Operator class for format prolog system.'
+		comment is 'Operator class for format-prolog system.'
 	]).
 
 	:- public(fit/5).
 	:- mode(fit(+atom, +integer, -atom, -integer, +integer), one).
 	:- info(fit/5, [
-		comment is 'Determine `ACol1` and `NextMode` fit given `Len`, `Mode` and start `Col`.',
+		comment is 'Determine ``ACol1`` and ``NextMode`` fit given ``Len``, ``Mode`` and start ``Col``.',
 		argnames is ['Mode', 'Col', 'NextMode', 'Acol1', 'Len']
 	]).
 
@@ -86,5 +86,3 @@
 		Max > Len.
 
 :- end_object.
-
-

@@ -7,7 +7,7 @@
 %  you may not use this file except in compliance with the License.
 %  You may obtain a copy of the License at
 %
-%      https://opensource.org/licenses/MIT
+%	 https://opensource.org/licenses/MIT
 %
 %  Unless required by applicable law or agreed to in writing, software
 %  distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,20 +18,20 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-:- object(fp_term_expression, 
+:- object(fp_term_expression,
 	imports([dctg_evaluate])).
 
 	:- info([
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
 		date is 2022-02-22,
-		comment is 'DCTG for term expression for format prolog system.'
+		comment is 'DCTG for term expression for format-prolog system.'
 	]).
 
 	:- public(term_expressionDCTG/6).
 	:- mode(term_expressionDCTG(+term, +integer, +atom, -term, +list, -list), one).
 	:- info(term_expressionDCTG/6, [
-		comment is 'Parse `Tokens` as a Prolog term expression, honoring the `Context`, `Precedence`, and `ContextOperator` to create the annotated abstract syntax tree `Tree`.',
+		comment is 'Parse ``Tokens`` as a Prolog term expression, honoring the ``Context``, ``Precedence``, and ``ContextOperator`` to create the annotated abstract syntax tree ``Tree``.',
 		argnames is ['Context', 'Precedence', 'ContextOperator', 'Tree', 'Tokens', 'Remainder']
 	]).
 
@@ -58,37 +58,37 @@
 	*/
 
 	term_expression(Context, Prec0, Comp0) ::=
-	  term_prefix(Context, Prec0, Comp0, Prec1) ^^ Pfx,
-	  !,
-	  term_expression_continuation(Context, Pfx, Prec1, Prec0, Comp0) ^^ R,
-	  {Pfx ^^ len(Lpfx),
-	   R ^^ len(Lr),
-	  Len is Lpfx + Lr
-	  }
-	  <:> (display(Col) ::-
+		term_prefix(Context, Prec0, Comp0, Prec1) ^^ Pfx,
+		!,
+		term_expression_continuation(Context, Pfx, Prec1, Prec0, Comp0) ^^ R,
+		{	Pfx ^^ len(Lpfx),
+			R ^^ len(Lr),
+			Len is Lpfx + Lr
+		}
+		<:> (display(Col) ::-
 		Pfx ^^ display(Col),
 		R ^^ display(Col)
-	        ),
-	        (len(Len)),
-	        (functor(F) ::- R ^^ functor(F)),
-	        (args(As) ::- R ^^ args(As)).
+			),
+			(len(Len)),
+			(functor(F) ::- R ^^ functor(F)),
+			(args(As) ::- R ^^ args(As)).
 
 
 	term_expression(Context, Prec0, Comp0) ::=
-	  simple_term(Context) ^^ T,
-	  !,
-	  term_expression_continuation(Context, T, 0, Prec0, Comp0) ^^ R,
-	  {T ^^ len(Lt),
-	   R ^^ len(Lr),
-	  Len is Lt + Lr
-	  }
-	  <:> (display(Col) ::-
+		simple_term(Context) ^^ T,
+		!,
+		term_expression_continuation(Context, T, 0, Prec0, Comp0) ^^ R,
+		{	T ^^ len(Lt),
+			R ^^ len(Lr),
+			Len is Lt + Lr
+		}
+		<:> (display(Col) ::-
 		T ^^ display(Col),
 		R ^^ display(Col)
-	        ),
-	        (len(Len)),
-	        (functor(F) ::- R ^^ functor(F)),
-	        (args(As) ::- R ^^ args(As)).
+			),
+			(len(Len)),
+			(functor(F) ::- R ^^ functor(F)),
+			(args(As) ::- R ^^ args(As)).
 
 
 	/* term_expression_continuation parses the rest of a term expression, 
@@ -97,42 +97,42 @@
 	*/
 
 	term_expression_continuation(Context, PrecedingTerm, PrecIn, Prec0, Comp0) ::=
-	  comments ^^ Comments,
-	  term_infix_or_suffix(Context, PrecedingTerm, Prec0, Comp0, PrecIn, PrecNext) ^^ T,
-	  term_expression_continuation(Context, T, PrecNext, Prec0, Comp0) ^^ R,
-	  {T ^^ len(Lt),
-	   R ^^ len(Lr),
-	   Len is Lt + Lr
-	  }
-	  <:> (display(Col) ::-
-		Comments ^^ display(Col),
-		T ^^ display(Col),
-		R ^^ display(Col)
-	        ),
-	        (len(Len)),
-	        (functor(F) ::- R ^^ functor(F)),
-	        (args(As) ::- R ^^ args(As)).
+		comments ^^ Comments,
+		term_infix_or_suffix(Context, PrecedingTerm, Prec0, Comp0, PrecIn, PrecNext) ^^ T,
+		term_expression_continuation(Context, T, PrecNext, Prec0, Comp0) ^^ R,
+		{	T ^^ len(Lt),
+			R ^^ len(Lr),
+			Len is Lt + Lr
+		}
+		 <:> (display(Col) ::-
+				Comments ^^ display(Col),
+				T ^^ display(Col),
+				R ^^ display(Col)
+			),
+			(len(Len)),
+			(functor(F) ::- R ^^ functor(F)),
+			(args(As) ::- R ^^ args(As)).
 
 	term_expression_continuation(_Context, PrecedingTerm, _PrecIn, _Prec0, _Comp0) ::=
-	  []
-	  <:> (display(_)),
-	        (len(0)),
-	        (functor(F) ::- PrecedingTerm ^^ functor(F)),
-	        (args(As) ::- PrecedingTerm ^^ args(As)).
+		[]
+		 <:> (display(_)),
+			(len(0)),
+			(functor(F) ::- PrecedingTerm ^^ functor(F)),
+			(args(As) ::- PrecedingTerm ^^ args(As)).
 
 	/*------------------------------------------------------------------*/
 	/* term_prefix parses a prefix operator and its accompanying (following
 	   ) term expression.
-	   */  
+	   */
+
 	term_prefix(Context, Prec0, Comp0, Prec1) ::=
 		op(Context, Prec1, Assoc) ^^ Op,
-		{precedence_constraint(Prec0, Comp0, Prec1),
-		 (Assoc == fx
-		   -> Comp1 = ('>')
-		  ;
-		  Assoc == fy,
-		  Comp1 = ('>=')
-		 )
+		{	precedence_constraint(Prec0, Comp0, Prec1),
+			(	Assoc == fx
+			->	Comp1 = ('>')
+			;	Assoc == fy,
+				Comp1 = ('>=')
+			)
 		},
 		comments ^^ C,
 		term_expression(Context, Prec1, Comp1) ^^ T,
@@ -141,17 +141,17 @@
 		 Len is Lop + Lt
 		}
 	 <:> (display(Col) ::-
-		      Op ^^ display(Col),
-		      adjusted_pos(Col, 1, Ncol1),
-		      C ^^ display(Ncol1),
-		      adjusted_pos(Col, 1, Ncol2),
-		      T ^^ display(Ncol2)
-	     ),
-	     (len(Len)),
-	     (functor(F) ::-
-		      Op ^^ functor(F)
-	     ),
-	     (args( [T])).
+			Op ^^ display(Col),
+			adjusted_pos(Col, 1, Ncol1),
+			C ^^ display(Ncol1),
+			adjusted_pos(Col, 1, Ncol2),
+			T ^^ display(Ncol2)
+		),
+		(len(Len)),
+		(functor(F) ::-
+			Op ^^ functor(F)
+		),
+		(args( [T])).
 
 
 
@@ -159,60 +159,56 @@
 	/* term_infix_or_suffix parses an infix or suffix operator and, in the
 	   case of an infix operator, its accompanying (following) term expression
 	   .
-	   */  
-	term_infix_or_suffix(Context,
-			 PrecedingTerm, Prec0, Comp0, PrecPrev, Prec1
-			) ::=
+	   */
+
+	term_infix_or_suffix(Context, PrecedingTerm, Prec0, Comp0, PrecPrev, Prec1) ::=
 		op(Context, Prec1, Assoc) ^^ Op,
-		{precedence_constraint(Prec0, Comp0, Prec1),
-		 (Assoc == yfx
-		   -> Comp1 = ('>'),
-		      Prec1 >= PrecPrev
-		  ;
-		  Assoc == xfy
-		   -> Comp1 = ('>='),
-		      Prec1 > PrecPrev
-		  ;
-		  Assoc == xfx,
-		  Comp1 = ('>'),
-		  Prec1 > PrecPrev
-		 )
+		{	precedence_constraint(Prec0, Comp0, Prec1),
+			(	Assoc == yfx
+			->	Comp1 = ('>'),
+				Prec1 >= PrecPrev
+			;	Assoc == xfy
+			->	Comp1 = ('>='),
+				Prec1 > PrecPrev
+			;	Assoc == xfx,
+				Comp1 = ('>'),
+				Prec1 > PrecPrev
+			)
 		},
 		trailing_comment ^^ Ct,
 		comments ^^ Cr,
 		term_expression(Context, Prec1, Comp1) ^^ T,
-		{Op ^^ len(Lop),
-		 T ^^ len(Lt),
-		 Len is Lop + Lt
+		{	Op ^^ len(Lop),
+			T ^^ len(Lt),
+			Len is Lop + Lt
 		}
 	 <:> (display(Col) ::-
-		      display_infix_term(Col, Op, Context, Ct, Cr, T)
-	     ),
-	     (len(Len)),
-	     (functor(F) ::-
-		      Op ^^ functor(F)
-	     ),
-	     (args( [PrecedingTerm, T])).
+			display_infix_term(Col, Op, Context, Ct, Cr, T)
+		),
+		(len(Len)),
+		(functor(F) ::-
+			Op ^^ functor(F)
+		),
+		(args( [PrecedingTerm, T])).
 
 	term_infix_or_suffix(_Context, T, Prec0, Comp0, PrecPrev, Prec1) ::=
 		op(argls, Prec1, Assoc) ^^ Op,
-		{precedence_constraint(Prec0, Comp0, Prec1),
-		 (Assoc == yf
-		   -> Prec1 >= PrecPrev
-		  ;
-		  Assoc == xf,
-		  Prec1 > PrecPrev
-		 ),
-		 Op ^^ len(Len)
+		{	precedence_constraint(Prec0, Comp0, Prec1),
+			(	Assoc == yf
+			->	Prec1 >= PrecPrev
+			;	Assoc == xf,
+			Prec1 > PrecPrev
+			),
+			Op ^^ len(Len)
 		}
 	 <:> (display(Col) ::-
-		      Op ^^ display(Col)
-	     ),
-	     (len(Len)),
-	     (functor(F) ::-
-		      Op ^^ functor(F)
-	     ),
-	     (args( [T])).
+			Op ^^ display(Col)
+		),
+		(len(Len)),
+		(functor(F) ::-
+			Op ^^ functor(F)
+		),
+		(args( [T])).
 
 
 	/*------------------------------------------------------------------*/
@@ -228,32 +224,31 @@
 		term_expression(NewContext, 0, '=<') ^^ T,
 		comments ^^ C2,
 		rparen,
-		{T ^^ len(Lt),
-		 Len is 2 + Lt
+		{	T ^^ len(Lt),
+			Len is 2 + Lt
 		}
 	 <:> (display(C) ::-
-		      pos(C),
-		      current_line(Ln1),
-		      fp_write('('),
-		      adjusted_pos(C, Nc),
-		      C1 ^^ display(Nc),
-		      T ^^ display(Nc),
-		      C2 ^^ display(Nc),
-		      current_line(Ln2),
-		      (Ln1 =:= Ln2
-		        -> true
-		       ;
-		       pos(C)
-		      ),
-		      fp_write(')')
-	     ),
-	     (len(Len)),
-	     (functor(F) ::-
-		      T ^^ functor(F)
-	     ),
-	     (args(As) ::-
-		      T ^^ args(As)
-	     ).
+			pos(C),
+			current_line(Ln1),
+			fp_write('('),
+			adjusted_pos(C, Nc),
+			C1 ^^ display(Nc),
+			T ^^ display(Nc),
+			C2 ^^ display(Nc),
+			current_line(Ln2),
+			(	Ln1 =:= Ln2
+			->	true
+			;	pos(C)
+			),
+			fp_write(')')
+		),
+		(len(Len)),
+		(functor(F) ::-
+			T ^^ functor(F)
+		),
+		(args(As) ::-
+			T ^^ args(As)
+		).
 
 
 	simple_term(Context) ::=
@@ -264,58 +259,57 @@
 		term_expression(NewContext, 0, '=<') ^^ T,
 		comments ^^ C2,
 		rbrace,
-		{T ^^ len(Lt),
-		 Len is 2 + Lt
+		{	T ^^ len(Lt),
+			Len is 2 + Lt
 		}
 	 <:> (display(C) ::-
-		      pos(C),
-		      current_line(Ln1),
-		      fp_write('{'),
-		      adjusted_pos(C, Nc),
-		      C1 ^^ display(Nc),
-		      T ^^ display(Nc),
-		      C2 ^^ display(Nc),
-		      current_line(Ln2),
-		      (Ln1 =:= Ln2
-		        -> true
-		       ;
-		       pos(C)
-		      ),
-		      fp_write('}')
-	     ),
-	     (len(Len)),
-	     (functor('{}')),
-	     (args( [T])).
+			pos(C),
+			current_line(Ln1),
+			fp_write('{'),
+			adjusted_pos(C, Nc),
+			C1 ^^ display(Nc),
+			T ^^ display(Nc),
+			C2 ^^ display(Nc),
+			current_line(Ln2),
+			(	Ln1 =:= Ln2
+			-> true
+			;	pos(C)
+			),
+			fp_write('}')
+		),
+		(len(Len)),
+		(functor('{}')),
+		(args( [T])).
 
 	simple_term(_) ::=
 		term_list ^^ T,
 		!,
 		{T ^^ len(Len)}
 	 <:> (display(C) ::-
-		      T ^^ display(C)
-	     ),
-	     (len(Len)),
-	     (functor(F) ::-
-		      T ^^ functor(F)
-	     ),
-	     (args(As) ::-
-		      T ^^ args(As)
-	     ).
+			T ^^ display(C)
+		),
+		(len(Len)),
+		(functor(F) ::-
+			T ^^ functor(F)
+		),
+		(args(As) ::-
+			T ^^ args(As)
+		).
 
 	simple_term(_) ::=
 		term_structure ^^ T,
 		!,
 		{T ^^ len(Len)}
 	 <:> (display(C) ::-
-		      T ^^ display(C)
-	     ),
-	     (len(Len)),
-	     (functor(F) ::-
-		      T ^^ functor(F)
-	     ),
-	     (args(As) ::-
-		      T ^^ args(As)
-	     ).
+			T ^^ display(C)
+		),
+		(len(Len)),
+		(functor(F) ::-
+			T ^^ functor(F)
+		),
+		(args(As) ::-
+			T ^^ args(As)
+		).
 
 
 	/*------------------------------------------------------------------*/
@@ -324,23 +318,23 @@
 		lbracket,
 		comments ^^ Cl,
 		element_list ^^ E,
-		{E ^^ len(Le),
-		 Len is Le + 1
+		{	E ^^ len(Le),
+			Len is Le + 1
 		}
 	 <:> (display(Col) ::-
-		      pos(Col),
-		      fp_write(' ['),
-		      current_column(NextCol),
-		      Cl ^^ display(NextCol),
-		      E ^^ display(check, NextCol)
-	     ),
-	     (len(Len)),
-	     (functor(F) ::-
-		      E ^^ functor(F)
-	     ),
-	     (args(As) ::-
-		      E ^^ args(As)
-	     ).
+			pos(Col),
+			fp_write(' ['),
+			current_column(NextCol),
+			Cl ^^ display(NextCol),
+			E ^^ display(check, NextCol)
+		),
+		(len(Len)),
+		(functor(F) ::-
+			 E ^^ functor(F)
+		),
+		(args(As) ::-
+			 E ^^ args(As)
+		).
 
 
 
@@ -351,27 +345,27 @@
 		!,
 		comments ^^ C,
 		element_list1 ^^ L,
-		{T ^^ len(Lt),
-		 L ^^ len(Ll),
-		 Len is Lt + Ll
+		{	T ^^ len(Lt),
+			L ^^ len(Ll),
+			Len is Lt + Ll
 		}
 	 <:> (display(Mode, Col) ::-
-		      display_element_list(Mode, Col, Len, T, C, L)
-	     ),
-	     (len(Len)),
-	     (functor('.')),
-	     (args( [T, L])).
+			 display_element_list(Mode, Col, Len, T, C, L)
+		),
+		(len(Len)),
+		(functor('.')),
+		(args( [T, L])).
 
 	element_list ::=
 		rbracket
 	 <:> (display(_, Col) ::-
-		      adjusted_pos(Col, Ncol),
-		      pos(Ncol),
-		      fp_write(']')
-	     ),
-	     (len(1)),
-	     (functor('[]')),
-	     (args( [])).
+			adjusted_pos(Col, Ncol),
+			pos(Ncol),
+			fp_write(']')
+		),
+		(len(1)),
+		(functor('[]')),
+		(args( [])).
 
 
 	/*------------------------------------------------------------------*/
@@ -381,23 +375,23 @@
 		!, /* performance */ 
 		comments ^^ C,
 		element_list ^^ L,
-		{L ^^ len(Ll),
-		 Len is 2 + Ll
+		{	L ^^ len(Ll),
+			Len is 2 + Ll
 		}
 	 <:> (display(Mode, Col) ::-
-		      fp_write(','),
-		      adjusted_pos(Col, 1, Acol),
-		      pos(Acol),
-		      C ^^ display(Acol),
-		      L ^^ display(Mode, Col)
-	     ),
-	     (len(Len)),
-	     (functor(F) ::-
-		      L ^^ functor(F)
-	     ),
-	     (args(Args) ::-
-		      L ^^ args(Args)
-	     ).
+			fp_write(','),
+			adjusted_pos(Col, 1, Acol),
+			pos(Acol),
+			C ^^ display(Acol),
+			L ^^ display(Mode, Col)
+		),
+		(len(Len)),
+		(functor(F) ::-
+			L ^^ functor(F)
+		),
+		(args(Args) ::-
+			L ^^ args(Args)
+		).
 
 	element_list1 ::=
 		vertbar,
@@ -406,62 +400,63 @@
 		term_expression(list, 0, '=<') ^^ T,
 		comments ^^ C2,
 		rbracket,
-		{T ^^ len(Lt),
-		 Len is 2 + Lt
+		{	T ^^ len(Lt),
+			Len is 2 + Lt
 		}
 	 <:> (display(_Mode, Col) ::-
-		      fp_write(' |'),
-		      adjusted_pos(Col, 1, Acol1),
-		      C1 ^^ display(Acol1),
-		      adjusted_pos(Col, 1, Acol2),
-		      T ^^ display(Acol2),
-		      adjusted_pos(Col, 1, Acol3),
-		      C2 ^^ display(Acol3),
-		      fp_write(']')
-	     ),
-	     (len(Len)),
-	     (functor(F) ::-
-		      T ^^ functor(F)
-	     ),
-	     (args(Args) ::-
-		      T ^^ args(Args)
-	     ).
+			fp_write(' |'),
+			adjusted_pos(Col, 1, Acol1),
+			C1 ^^ display(Acol1),
+			adjusted_pos(Col, 1, Acol2),
+			T ^^ display(Acol2),
+			adjusted_pos(Col, 1, Acol3),
+			C2 ^^ display(Acol3),
+			fp_write(']')
+		),
+		(len(Len)),
+		(functor(F) ::-
+			T ^^ functor(F)
+		),
+		(args(Args) ::-
+			T ^^ args(Args)
+		).
 
 	element_list1 ::=
 		rbracket
 	 <:> (display(_Mode, Col) ::-
-		      adjusted_pos(Col, Ncol),
-		      pos(Ncol),
-		      fp_write(']')
-	     ),
-	     (len(1)),
-	     (functor(' []')),
-	     (args( [])).
+			adjusted_pos(Col, Ncol),
+			pos(Ncol),
+			fp_write(']')
+		),
+		(len(1)),
+		(functor(' []')),
+		(args( [])).
 
 
 	/*------------------------------------------------------------------*/
 	/* term_structure parses a structure (a functor with an argument list)
 	   or an atom (a 0-arity structure).
-	   */  
+	   */
+
 	term_structure ::=
 		function ^^ F,
 		term_structure_tail ^^ A,
-		{F ^^ len(Lf),
-		 A ^^ len(La),
-		 Len is Lf + La
+		{	F ^^ len(Lf),
+			A ^^ len(La),
+			Len is Lf + La
 		}
 	 <:> (display(Col) ::-
-		      F ^^ display(Col),
-		      adjusted_pos(Col, Ncol),
-		      A ^^ display(Ncol)
-	     ),
-	     (len(Len)),
-	     (functor(Fn) ::-
-		      F ^^ functor(Fn)
-	     ),
-	     (args(Args) ::-
-		      A ^^ args(Args)
-	     ).
+			F ^^ display(Col),
+			adjusted_pos(Col, Ncol),
+			A ^^ display(Ncol)
+		),
+		(len(Len)),
+		(functor(Fn) ::-
+			F ^^ functor(Fn)
+		),
+		(args(Args) ::-
+			A ^^ args(Args)
+		).
 
 
 	/*------------------------------------------------------------------*/
@@ -472,22 +467,22 @@
 		term_args ^^ T,
 		comments ^^ C,
 		rparen,
-		{T ^^ len(Lt),
-		 Len is Lt + 2
+		{	T ^^ len(Lt),
+			Len is Lt + 2
 		}
 	 <:> (display(Col) ::-
-		      tst_display(Col, T, C)
-	     ),
-	     (len(Len)),
-	     (args(Args) ::-
-		      T ^^ args(Args)
-	     ).
+			tst_display(Col, T, C)
+		),
+		(len(Len)),
+		(args(Args) ::-
+			T ^^ args(Args)
+		).
 
 	term_structure_tail ::=
-		 []
+		[]
 	 <:> (display(_)),
-	     (len(0)),
-	     (args( [])).
+		(len(0)),
+		(args( [])).
 
 	/*------------------------------------------------------------------*/
 	/* term_args parses the argument list of a structure, not including the
@@ -499,14 +494,14 @@
 		argument_list ^^ T,
 		{T ^^ len(Len)}
 	 <:> (display(Col) ::-
-		      adjusted_pos(Col, NextCol),
-		      C ^^ display(NextCol),
-		      T ^^ display(check, NextCol)
-	     ),
-	     (len(Len)),
-	     (args(Args) ::-
-		      T ^^ args(Args)
-	     ).
+			adjusted_pos(Col, NextCol),
+			C ^^ display(NextCol),
+			T ^^ display(check, NextCol)
+		),
+		(len(Len)),
+		(args(Args) ::-
+			T ^^ args(Args)
+		).
 
 
 
@@ -516,21 +511,21 @@
 		term_expression(argls, 0, '=<') ^^ T,
 		comments ^^ C,
 		argument_list1 ^^ L,
-		{T ^^ len(Lt),
-		 L ^^ len(Ll),
-		 Len is Lt + Ll
+		{	T ^^ len(Lt),
+			L ^^ len(Ll),
+			Len is Lt + Ll
 		}
 	 <:> (display(Mode, Col) ::-
-		      fit(Mode, Col, NextMode, Acol1, Len),
-		      T ^^ display(Acol1),
-		      adjusted_pos(Col, Acol2),
-		      C ^^ display(Acol2),
-		      L ^^ display(NextMode, Col)
-	     ),
-	     (len(Len)),
-	     (args( [T | Args]) ::-
-		      L ^^ args(Args)
-	     ).
+			fit(Mode, Col, NextMode, Acol1, Len),
+			T ^^ display(Acol1),
+			adjusted_pos(Col, Acol2),
+			C ^^ display(Acol2),
+			L ^^ display(NextMode, Col)
+		),
+		(len(Len)),
+		(args( [T | Args]) ::-
+			L ^^ args(Args)
+		).
 
 
 
@@ -545,21 +540,21 @@
 		 Len is 2 + Ll
 		}
 	 <:> (display(Mode, Col) ::-
-		      fp_write(','),
-		      adjusted_pos(Col, 1, Acol),
-		      pos(Acol),
-		      C ^^ display(Acol),
-		      L ^^ display(Mode, Col)
-	     ),
-	     (len(Len)),
-	     (args(Args) ::-
-		      L ^^ args(Args)
-	     ).
+			fp_write(','),
+			adjusted_pos(Col, 1, Acol),
+			pos(Acol),
+			C ^^ display(Acol),
+			L ^^ display(Mode, Col)
+		),
+		(len(Len)),
+		(args(Args) ::-
+			L ^^ args(Args)
+		).
 
 	argument_list1 ::=
-		 []
+		[]
 	 <:> (display(_, _)),
-	     (len(0)),
-	     (args( [])).
+		(len(0)),
+		(args( [])).
 
 :- end_object.

@@ -24,13 +24,13 @@
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
 		date is 2022-02-22,
-		comment is 'Display items for format prolog system.'
+		comment is 'Display items for format-prolog system.'
 	]).
 
 	:- public(display_item/2).
 	:- mode(display_item(+integer, +atom), one).
 	:- info(display_item/2, [
-		comment is 'Display `Item` with left padding of `Indent`.',
+		comment is 'Display ``Item`` with left padding of ``Indent``.',
 		argnames is ['Indent', 'Item']
 	]).
 
@@ -46,29 +46,28 @@
 	/*------------------------------------------------------------*/
 
 	display_item(Col, Item) :-
-	   adjusted_pos(Col, Ncol),
-	   pos(Ncol, Newline),
-	   display_item1(Item, Newline).
+		adjusted_pos(Col, Ncol),
+		pos(Ncol, Newline),
+		display_item1(Item, Newline).
 
 
 	/*------------------------------------------------------------*/
 
 	display_item1(nl, _Newline) :-
-	    fp_nl.
+		fp_nl.
 	display_item1(w(Cs), Newline) :-
-	   (Newline == yes
-	     -> left_trim(Cs, " ", TrimmedCs)
-	    /* trim blanks */  
-	    ;
-	    TrimmedCs = Cs
-	   ),
-	   atom_codes(W, TrimmedCs),
-	   fp_write(W).
+		(	Newline == yes
+		->	left_trim(Cs, " ", TrimmedCs)
+			/* trim blanks */
+		;	TrimmedCs = Cs
+		),
+		atom_codes(W, TrimmedCs),
+		fp_write(W).
 	display_item1(t(Cs), _) :-
-	   atom_codes(T, Cs),
-	   fp_write(T).
+		atom_codes(T, Cs),
+		fp_write(T).
 	display_item1(p(C), _) :-
-	   atom_codes(P,  [C]),
-	   fp_write(P).
+		atom_codes(P, [C]),
+		fp_write(P).
 
 :- end_object.

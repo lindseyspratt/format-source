@@ -24,13 +24,13 @@
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
 		date is 2022-02-22,
-		comment is 'DCTG for a Prolog comment for format prolog system.'
+		comment is 'DCTG for a Prolog comment for format-prolog system.'
 	]).
 
 	:- public(commentDCTG/3).
 	:- mode(commentDCTG(-term, +list, -list), one).
 	:- info(commentDCTG/3, [
-		comment is 'Parse `Tokens` as a Prolog comment to create the annotated abstract syntax tree `Tree`.',
+		comment is 'Parse ``Tokens`` as a Prolog comment to create the annotated abstract syntax tree ``Tree``.',
 		argnames is ['Tree', 'Tokens', 'Remainder']
 	]).
 	
@@ -43,7 +43,8 @@
 	/* A comment has one of two forms, as indicated by comment_start.  It 
 	   either begins with a / * and ends with a * / or it begins with a % 
 	   and ends with a newline.
-	   */  
+	   */
+
 	comment ::=
 		comment_start(Start, End),
 		wls,

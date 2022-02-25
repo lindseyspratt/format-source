@@ -24,7 +24,7 @@
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
 		date is 2022-02-22,
-		comment is 'String utilities for format prolog system.'
+		comment is 'String utilities for format-prolog system.'
 	]).
 
 	:- public(left_trim/3).
@@ -49,36 +49,34 @@
 	]).
 	
 	
-	:- uses(list, [memberchk/2]).
+	:- uses(list, [member/2]).
 
 	/*------------------------------------------------------------------*/
 
-	trim( [], _,  []).
-	trim( [C0 | Cs0], TrimCs, Cs1) :-
-		(memberchk(C0, TrimCs)
-		  -> Cs1 = OtherCs1
-		 ;
-		 Cs1 =  [C0 | OtherCs1]
+	trim([], _, []).
+	trim([C0 | Cs0], TrimCs, Cs1) :-
+		(	member(C0, TrimCs)
+		->	Cs1 = OtherCs1
+		;	Cs1 =  [C0 | OtherCs1]
 		),
 		trim(Cs0, TrimCs, OtherCs1).
 
 
     /*------------------------------------------------------------------*/
 
-  	left_trim( [], _,  []).
-  	left_trim( [C0 | Cs0], TrimCs, Cs1) :-
-  		(memberchk(C0, TrimCs)
-  		  -> Cs1 = OtherCs1,
-  			   left_trim(Cs0, TrimCs, OtherCs1)
-  		 ;
-  		 Cs1 =  [C0 | Cs0]
-  		).
+	left_trim([], _, []).
+	left_trim([C0 | Cs0], TrimCs, Cs1) :-
+		(	member(C0, TrimCs)
+		->	Cs1 = OtherCs1,
+			left_trim(Cs0, TrimCs, OtherCs1)
+		;	Cs1 =  [C0 | Cs0]
+		).
 
 	/*------------------------------------------------------------------*/
 
 	repeated_codes( [C | Cs]) :-
 		repeated_codes(Cs, C).
-			  
+
 	repeated_codes( [], _).
 	repeated_codes( [C | Cs], C) :-
 		repeated_codes(Cs, C).
