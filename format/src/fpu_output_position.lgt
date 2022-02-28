@@ -23,7 +23,7 @@
 	:- info([
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
-		date is 2022-02-25,
+		date is 2022-02-28,
 		comment is 'Utilities for output for format prolog system.'
 	]).
 
@@ -65,13 +65,6 @@
 	:- info(current_line/1, [
 		comment is 'Binds `Line` to the current output line count.',
 		argnames is ['Line']
-	]).
-
-	:- public(writeseqnl/1).
-	:- mode(writeseqnl(+list), one).
-	:- info(writeseqnl/1, [
-		comment is 'Write a list of terms followed by a newline on current output.',
-		argnames is ['List']
 	]).
 
 	:- private(known_current_position_/2).
@@ -286,10 +279,5 @@
 		->	true
 		;	skip(Stream, Code)
 		).
-
-	writeseqnl([]) :- nl.
-	writeseqnl([H|T]) :-
-		write(H),
-		writeseqnl(T).
 
 :- end_object.
