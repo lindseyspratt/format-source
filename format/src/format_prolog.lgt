@@ -23,7 +23,7 @@
 	:- info([
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
-		date is 2022-02-24,
+		date is 2022-02-28,
 		comment is 'Format prolog source.'
 	]).
 
@@ -35,7 +35,8 @@
 	]).
 
 	:- uses(fp_lex, [lex_file/2]).
-	:- uses(fpu_output_position, [initialize_output_position_info/0, fp_nl/0, writeseqnl/1]).
+	:- uses(fpu_output_position, [initialize_output_position_info/0, fp_nl/0]).
+	:- uses(format, [format/2]).
 	:- uses(os, [copy_file/2, delete_file/1]).
 
 	/*------------------------------------------------------------------*/
@@ -49,7 +50,7 @@
 		->	tellx(Old),
 			copy_file('temp.pl', Output),
 			delete_file('temp.pl')
-		;	writeseqnl(['Unable to fully parse "', Source, '" . Partial formatting in `temp.pl` follows:']),
+		;	format('Unable to fully parse "~w". Partial formatting in `temp.pl` follows:', [Source]),
 			toldx,
 			tellx('partial.pl'),
 			format_prolog1(partial, Tokens),
