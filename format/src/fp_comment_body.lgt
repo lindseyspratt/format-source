@@ -18,7 +18,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-:- object(fp_comment_body).
+:- object(fp_comment_body,
+	imports([dctg_evaluate])).
 
 	:- info([
 		version is 1:0:0,
@@ -55,11 +56,14 @@
 		argnames is ['End', 'Tree', 'Tokens', 'Remainder']
 	]).
 	
+	:- uses(fpu_display_item, [display_item/2]).
 	:- uses(fpu_display, [display_comment_end/3]).
 	:- uses(fp_whitespace_handling, [wlsDCTG/3, nnl_wlsDCTG/3]).
 	:- uses(fp_format_directives, [start_skip_directiveDCTG/3, end_skip_directiveDCTG/3]).
 	:- uses(fp_comment_items, [nls_itemDCTG/3, skip_itemDCTG/3]).
 	:- uses(list, [member/2]).
+
+	^^(A, B) :- ::eval(A, B).
 
 	/*------------------------------------------------------------------*/
 	/* comment_body(End) - parses the contents of a comment, starting after

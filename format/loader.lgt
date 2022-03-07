@@ -19,7 +19,6 @@
 
 
 :- initialization((
-	set_logtalk_flag(portability, warning),
 	logtalk_load(basic_types(loader)),
 	logtalk_load(format(loader)),
 	logtalk_load(os(loader)),
@@ -56,6 +55,6 @@
 		'src/fp_clause_group',
 		'src/format_prolog'
 	], [hook(dctg),
-		optimize(on)
+		debug(on), portability(warning)
 	])
 )).

@@ -42,8 +42,9 @@
 	:- uses(fp_comments, [commentsDCTG/3]).
 	:- uses(fp_trailing_comment, [trailing_commentDCTG/3]).
 	:- uses(fp_named_characters, [commaDCTG/3, vertbarDCTG/3, lparenDCTG/3, rparenDCTG/3, lbraceDCTG/3, rbraceDCTG/3, lbracketDCTG/3, rbracketDCTG/3]).
-	:- uses(fpu_output_position, [pos/1, adjusted_pos/2, adjusted_pos/3, current_line/1, fp_write/1]).
-	:- uses(fpu_display, [display_element_list/6, tst_display/3]).
+	:- uses(fpu_output_position, [pos/1, adjusted_pos/2, adjusted_pos/3, current_line/1, current_column/1, fp_write/1]).
+	:- uses(fpu_display, [display_element_list/6, display_infix_term/6, tst_display/3]).
+	:- uses(fpu_fit, [fit/5]).
 
 	^^(A, B) :- ::eval(A, B).
 

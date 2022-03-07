@@ -76,7 +76,8 @@
 
 	op_token1(Ncs) ::=
 		[p(C)],
-		{Ncs =  [C]},
+		{Ncs =  [C],
+		 [C] \= "." },
 		!.
 
 	op_token1(Ncs) ::=

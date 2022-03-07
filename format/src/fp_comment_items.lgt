@@ -18,7 +18,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-:- object(fp_comment_items).
+:- object(fp_comment_items,
+	imports([dctg_evaluate])).
 
 	:- info([
 		version is 1:0:0,
@@ -43,6 +44,10 @@
 
 	:- uses(fp_format_directives, [format_directiveDCTG/3]).
 	:- uses(fp_whitespace_handling, [blank_linesDCTG/3, nnl_wlsDCTG/3]).
+	:- uses(fpu_output_position, [adjusted_pos/3]).
+	:- uses(fpu_display_item, [display_item/2]).
+
+	^^(A, B) :- ::eval(A, B).
 
 	/*------------------------------------------------------------------*/
 	/* nls_item is an item with "no leading space".  The name is something

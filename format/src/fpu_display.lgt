@@ -42,6 +42,12 @@
 		argnames is ['StartLine', 'Indent', 'EndToken']
 	]).
 	
+	:- public(display_infix_term/6).
+	:- mode(display_infix_term(+integer, +term, +atom, +term, +term, +term), one).
+	:- info(display_infix_term/6, [
+		comment is 'Display the operator ``Op`` and right-hand side ``T`` of an infix term in ``Context``, indenting by ``Indent``, with trailing comment ``Ct`` and additional comment ``Cr``.',
+		argnames is ['Indent', 'Op', 'Context', 'Ct', 'Cr', 'T']
+	]).
 	
 	:- public(display_element_list/6).
 	:- mode(display_element_list(+atom, +integer, +integer, +term, +term, +term), one).

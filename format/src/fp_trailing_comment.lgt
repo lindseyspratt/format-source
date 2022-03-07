@@ -18,7 +18,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-:- object(fp_trailing_comment).
+:- object(fp_trailing_comment,
+	imports([dctg_evaluate])).
 
 	:- info([
 		version is 1:0:0,
@@ -36,6 +37,8 @@
 	
 	:- uses(fp_whitespace_handling, [nnl_wlsDCTG/3]).
 	:- uses(fp_comment, [commentDCTG/3]).
+
+	^^(A, B) :- ::eval(A, B).
 
 	/*------------------------------------------------------------------*/
 	/* A trailing comment is a comment preceded by any amount of non-newline

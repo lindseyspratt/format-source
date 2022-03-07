@@ -43,17 +43,17 @@
 	format_prolog(Source, Output) :-
 		lex_file(Source, Tokens),
 		!,
-		current_output(Old),
-		tellx('temp.pl'),
+		%current_output(Old),
+		%tellx('temp.pl'),
 		(	format_prolog1(full, Tokens)
-		->	tellx(Old),
+		->	%tellx(Old),
 			copy_file('temp.pl', Output),
 			delete_file('temp.pl')
 		;	writeseqnl(['Unable to fully parse "', Source, '" . Partial formatting in `temp.pl` follows:']),
-			toldx,
-			tellx('partial.pl'),
-			format_prolog1(partial, Tokens),
-			tellx(Old)
+			%toldx,
+			%tellx('partial.pl'),
+			format_prolog1(partial, Tokens) %,
+			%tellx(Old)
 		).
 
 	format_prolog1(Mode, Tokens) :-

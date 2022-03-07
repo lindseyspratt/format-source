@@ -16,11 +16,15 @@
 %  limitations under the License.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+repeat_term(0, _, []) :- !.
+repeat_term(N, H, [H|T]) :-
+	K is N - 1,
+	repeat_term(K, H, T).
+	
 
 :- object(fp_clause_group).
 
-	:- uses(fpu_output_position, [fp_nl/0, fp_writenl/1]).
+	:- uses(fpu_output_position, [adjusted_pos/3, fp_nl/0, fp_writenl/1]).
 	:- uses(fpu_node_evaluation, [eval_clause/1]).
 	:- uses(fp_comments, [commentsDCTG/3]).
 	:- uses(fp_trailing_comment, [trailing_commentDCTG/3]).
@@ -59,12 +63,13 @@
 	clause_group(Mode) ::=
 		comments ^^ Cmt,
 		clause(Mode, IdentifyingFunctor) ^^ Clause,
-		{format(user, '~N~nParsed first clause for ~w.', [IdentifyingFunctor])},
+		{format(user_output, '~N~nParsed first clause for ~w.~n', [IdentifyingFunctor])},
 		clause_group(Mode, IdentifyingFunctor) ^^ ClauseGroup,
-		{format(user, '~N~nFinished clause group for ~w.',  [IdentifyingFunctor]),
+		{format(user_output, '~N~nFinished clause group for ~w.~n',  [IdentifyingFunctor]),
 		 !}
 	 <:> display ::-
-			format('~N~w~66(-)~w',  ['/*', '*/']),
+		    {repeat_term(66, '-', L)},
+			{format('~N~w~s~w',  ['/*', L, '*/'])},
 			fp_nl, % resets the known current position to 0 as a side-effect. 
 			Cmt ^^ display(1),
 			Clause ^^ display,

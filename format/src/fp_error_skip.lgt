@@ -30,11 +30,11 @@
 	:- public(error_skipDCTG/4).
 	:- mode(error_skipDCTG(+term, -term, +list, -list), one).
 	:- info(error_skipDCTG/4, [
-		comment is 'Parse ``Tokens`` `SkipToken` is found to create the annotated abstract syntax tree ``Tree``.',
+		comment is 'Parse ``Tokens`` until ``SkipToken`` is found to create the annotated abstract syntax tree ``Tree``.',
 		argnames is ['SkipToken', 'Tree', 'Tokens', 'Remainder']
 	]).
 	
-	:- uses(fpu_display_item, [display_item/2]).
+	:- uses(fpu_display_item, [display_item/2, display_item_list/2]).
 
 	error_skip(SkipToken) ::=
 		[SkipToken],

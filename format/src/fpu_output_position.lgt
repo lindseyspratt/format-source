@@ -63,8 +63,15 @@
 	:- public(current_line/1).
 	:- mode(current_line(-integer), one).
 	:- info(current_line/1, [
-		comment is 'Binds `Line` to the current output line count.',
+		comment is 'Binds ``Line`` to the current output line count.',
 		argnames is ['Line']
+	]).
+
+	:- public(current_column/1).
+	:- mode(current_column(-integer), one).
+	:- info(current_column/1, [
+		comment is 'Binds ``Col`` to the current output column.',
+		argnames is ['Col']
 	]).
 
 	:- public(writeseqnl/1).

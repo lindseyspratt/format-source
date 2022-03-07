@@ -18,7 +18,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-:- object(fp_format_directives).
+:- object(fp_format_directives,
+	imports([dctg_evaluate])).
 
 	:- info([
 		version is 1:0:0,
@@ -51,6 +52,8 @@
 	:- uses(fpu_output_position, [adjusted_pos/3, fp_write/1]).
 %	:- uses(fpu_node_evaluation, [eval_goal/1]).
 %	:- uses(fp_whitespace_handling, [wlsDCTG/3]).
+	
+	^^(A, B) :- ::eval(A, B).
 	
 	/*------------------------------------------------------------------*/
 

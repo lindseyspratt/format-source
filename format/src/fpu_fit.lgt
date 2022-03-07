@@ -72,7 +72,7 @@
 		pos(Col).
 
 	fit_process(_, _, NextMode, _) :-
-		format('fit_process: Unrecognized mode = "~w".',  [NextMode]),
+		{format(user_output, 'fit_process: Unrecognized mode = "~w".~n',  [NextMode])},
 		!,
 		fail.
 
