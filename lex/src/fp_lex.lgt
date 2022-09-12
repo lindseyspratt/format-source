@@ -23,7 +23,7 @@
 	:- info([
 		version is 1:0:0,
 		author is 'Lindsey Spratt',
-		date is 2022-02-22,
+		date is 2022-09-12,
 		comment is 'lexical analysis for the format-prolog source system.'
 	]).
 
@@ -66,7 +66,7 @@
 		open(File, read, S),
 		listify(Source, S),
 		close(S),
-		lex(Token_list, Source, []).
+		phrase(lex(Token_list), Source).
 
 	listify(L, S) :-
 		get_code(S, H),
